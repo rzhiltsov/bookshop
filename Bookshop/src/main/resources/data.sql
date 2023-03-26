@@ -1,56 +1,132 @@
---books
-insert into books (author, title, priceOld, price)
-values ('Drucie Goodbourn', 'exploit real-time e-commerce', '$203.23', '$43.37');
-insert into books (author, title, priceOld, price)
-values ('Marcia Aggiss', 'utilize real-time interfaces', '$260.31', '$35.96');
-insert into books (author, title, priceOld, price)
-values ('Giovanni Bigg', 'extend strategic e-services', '$272.00', '$151.04');
-insert into books (author, title, priceOld, price)
-values ('Duffie Eynon', 'iterate integrated solutions', '$271.58', '$141.40');
-insert into books (author, title, priceOld, price)
-values ('Anselma McKennan', 'cultivate magnetic e-commerce', '$278.43', '$54.44');
-insert into books (author, title, priceOld, price)
-values ('Gert Kira', 'architect vertical ROI', '$282.54', '$102.61');
-insert into books (author, title, priceOld, price)
-values ('Clerc Djakovic', 'disintermediate extensible architectures', '$295.38', '$181.27');
-insert into books (author, title, priceOld, price)
-values ('Stacee Elsy', 'extend leading-edge methodologies', '$283.08', '$97.96');
-insert into books (author, title, priceOld, price)
-values ('Dorotea Bonhill', 'integrate one-to-one systems', '$258.51', '$52.25');
-insert into books (author, title, priceOld, price)
-values ('Minni Bunney', 'revolutionize 24/7 infrastructures', '$260.79', '$33.69');
-insert into books (author, title, priceOld, price)
-values ('Berty Gandley', 'enhance innovative e-services', '$256.54', '$160.98');
-insert into books (author, title, priceOld, price)
-values ('Raynard Tesdale', 'maximize 24/365 e-tailers', '$262.07', '$34.06');
-insert into books (author, title, priceOld, price)
-values ('Joanna Hutfield', 'scale integrated architectures', '$257.66', '$32.97');
-insert into books (author, title, priceOld, price)
-values ('Dannie Glidder', 'e-enable frictionless web services', '$288.19', '$90.52');
-insert into books (author, title, priceOld, price)
-values ('Timmie Adshede', 'strategize B2B channels', '$232.27', '$44.83');
-insert into books (author, title, priceOld, price)
-values ('Fernando Neads', 'syndicate compelling deliverables', '$287.45', '$101.89');
-insert into books (author, title, priceOld, price)
-values ('Teddy Guilliland', 'utilize bleeding-edge users', '$281.37', '$146.21');
-insert into books (author, title, priceOld, price)
-values ('Paloma Grebert', 'cultivate 24/365 networks', '$270.99', '$184.76');
-insert into books (author, title, priceOld, price)
-values ('Kristos Usher', 'embrace plug-and-play platforms', '$278.36', '$77.71');
-insert into books (author, title, priceOld, price)
-values ('Darcey Rohmer', 'target innovative paradigms', '$298.94', '$130.01');
-insert into books (author, title, priceOld, price)
-values ('Cristie Isacsson', 'generate open-source e-business', '$276.57', '$113.25');
-insert into books (author, title, priceOld, price)
-values ('Lindsay Coutthart', 'implement user-centric e-markets', '$254.70', '$115.31');
-insert into books (author, title, priceOld, price)
-values ('Helyn Schneidar', 'utilize magnetic supply-chains', '$279.70', '$77.86');
-insert into books (author, title, priceOld, price)
-values ('Bette-ann Askem', 'e-enable dot-com supply-chains', '$297.83', '$110.15');
-insert into books (author, title, priceOld, price)
-values ('Dom Robuchon', 'facilitate efficient eyeballs', '$232.30', '$131.48');
-
 --authors
-insert into authors (name)
-select distinct author
-from books;
+INSERT INTO author (name)
+VALUES
+  ('Jesse Hardin'),
+  ('Jessica Mendez'),
+  ('Maryam Clarke'),
+  ('Ori Ball'),
+  ('Barbara Steele'),
+  ('Ray Nolan'),
+  ('Nero Oliver'),
+  ('Mohammad Montgomery'),
+  ('Wylie Blevins'),
+  ('Leila Ashley'),
+  ('Charles Strong'),
+  ('Cooper Leonard'),
+  ('Lydia Stout'),
+  ('Tyler Hunt'),
+  ('Phelan Phillips'),
+  ('Cynthia Mcdonald'),
+  ('Rhoda Maynard'),
+  ('Christine Bailey'),
+  ('Herrod Lloyd'),
+  ('Chiquita Best'),
+  ('Reese Peters'),
+  ('Jenette Lott'),
+  ('Kirestin Bowman'),
+  ('Sara Alston'),
+  ('Bo Castro');
+
+--books
+INSERT INTO books (title,price_old,price,author_id)
+VALUES
+  ('Clindamycin HCl','$60.60','$43.14',6),
+  ('Meloxicam','$94.15','$41.06',13),
+  ('Clindamycin HCl','$54.84','$13.34',16),
+  ('Simvastatin','$51.14','$25.79',13),
+  ('Sertraline HCl','$56.20','$27.91',3),
+  ('Oxycodone/APAP','$67.82','$12.36',12),
+  ('Lyrica','$98.82','$46.09',2),
+  ('Carisoprodol','$64.55','$34.95',5),
+  ('Alendronate Sodium','$90.90','$8.08',1),
+  ('Losartan Potassium','$55.02','$31.40',4),
+  ('Premarin','$78.50','$4.79',24),
+  ('Penicillin VK','$72.90','$31.06',20),
+  ('Glyburide','$67.53','$18.18',4),
+  ('Amphetamine Salts','$61.46','$31.78',18),
+  ('APAP/Codeine','$94.62','$2.50',21),
+  ('Vitamin D (Rx)','$80.67','$0.77',11),
+  ('Potassium Chloride','$62.26','$26.27',9),
+  ('Lorazepam','$90.19','$19.36',10),
+  ('Sulfamethoxazole/Trimethoprim','$70.98','$14.80',22),
+  ('Bystolic','$75.40','$44.17',21),
+  ('Famotidine','$60.18','$23.36',16),
+  ('Cymbalta','$63.69','$42.97',24),
+  ('Simvastatin','$90.06','$6.18',20),
+  ('Hydrocodone/APAP','$80.28','$49.57',1),
+  ('Sulfamethoxazole/Trimethoprim','$60.07','$12.93',12),
+  ('Cyclobenzaprin HCl','$77.51','$21.42',5),
+  ('Cheratussin AC','$61.51','$49.67',20),
+  ('Enalapril Maleate','$71.53','$40.40',20),
+  ('Cephalexin','$84.89','$9.75',4),
+  ('Fluticasone Propionate','$61.04','$26.84',22),
+  ('Folic Acid','$94.58','$3.86',22),
+  ('Albuterol','$72.16','$9.76',19),
+  ('Promethazine HCl','$83.56','$26.30',11),
+  ('Plavix','$52.92','$49.51',24),
+  ('Amlodipine Besylate','$65.28','$28.88',21),
+  ('Pantoprazole Sodium','$50.46','$43.95',5),
+  ('Nuvaring','$50.08','$36.81',10),
+  ('Cyclobenzaprin HCl','$75.93','$12.29',23),
+  ('Nexium','$56.19','$44.44',11),
+  ('Nasonex','$76.26','$3.50',4),
+  ('Oxycodone/APAP','$96.92','$30.17',19),
+  ('Atenolol','$92.42','$11.89',10),
+  ('Lantus','$58.91','$36.47',15),
+  ('Diovan','$67.39','$43.20',7),
+  ('Carisoprodol','$77.57','$2.80',19),
+  ('Levoxyl','$95.90','$22.38',4),
+  ('Alprazolam','$81.83','$44.55',18),
+  ('Omeprazole (Rx)','$84.01','$37.81',17),
+  ('Warfarin Sodium','$99.70','$32.57',12),
+  ('Klor-Con M20','$98.36','$44.80',15),
+  ('Lisinopril','$75.80','$39.99',18),
+  ('Prednisone','$50.14','$11.07',5),
+  ('Carvedilol','$60.13','$38.90',5),
+  ('Promethazine HCl','$87.81','$2.59',24),
+  ('Lyrica','$90.73','$27.63',4),
+  ('Amitriptyline HCl','$59.24','$4.36',18),
+  ('Trazodone HCl','$98.76','$4.15',20),
+  ('Famotidine','$76.61','$0.70',13),
+  ('Pantoprazole Sodium','$87.34','$45.51',13),
+  ('Januvia','$72.57','$42.15',19),
+  ('Nexium','$71.06','$42.52',11),
+  ('Hydrochlorothiazide','$59.87','$13.46',15),
+  ('Simvastatin','$72.29','$10.31',21),
+  ('Lorazepam','$52.72','$29.31',6),
+  ('Diazepam','$77.79','$17.45',10),
+  ('Spiriva Handihaler','$92.49','$32.43',5),
+  ('Bystolic','$62.63','$0.59',13),
+  ('Fluticasone Propionate','$61.27','$42.09',25),
+  ('Azithromycin','$100.00','$23.62',22),
+  ('Nexium','$73.24','$42.37',5),
+  ('Furosemide','$78.25','$39.25',20),
+  ('Sertraline HCl','$82.03','$9.00',25),
+  ('Diovan','$59.87','$17.10',11),
+  ('Benicar','$53.13','$29.07',24),
+  ('Metoprolol Tartrate','$65.38','$29.25',17),
+  ('Oxycodone/APAP','$64.62','$28.39',10),
+  ('Fluticasone Propionate','$71.06','$8.28',9),
+  ('Pravastatin Sodium','$75.95','$15.14',15),
+  ('Lyrica','$83.02','$44.19',22),
+  ('Endocet','$64.19','$27.13',23),
+  ('Metoprolol Succinate','$92.62','$48.15',2),
+  ('Cephalexin','$69.80','$46.19',15),
+  ('Doxycycline Hyclate','$59.06','$25.32',15),
+  ('Cialis','$61.00','$17.83',24),
+  ('Suboxone','$75.20','$26.98',1),
+  ('Niaspan','$76.85','$18.40',25),
+  ('Oxycontin','$93.09','$23.05',14),
+  ('Benicar','$71.39','$27.71',18),
+  ('Benicar HCT','$92.58','$32.16',17),
+  ('Furosemide','$90.34','$40.56',3),
+  ('Diazepam','$97.14','$25.15',9),
+  ('Tramadol HCl','$95.93','$44.33',24),
+  ('Zetia','$67.42','$24.85',9),
+  ('Cymbalta','$69.81','$30.22',22),
+  ('Lovaza','$91.03','$42.57',7),
+  ('Vytorin','$80.75','$23.03',24),
+  ('Losartan Potassium','$72.49','$46.81',8),
+  ('','$95.71','$12.54',21),
+  ('Cheratussin AC','$88.82','$41.53',15),
+  ('Synthroid','$74.04','$16.42',17);

@@ -1,7 +1,13 @@
 package com.example.MyBookShopApp.data;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "author")
 public class Author {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
 
@@ -23,6 +29,7 @@ public class Author {
 
     @Override
     public String toString() {
-        return name.split("\\s")[1] + " " + name.split("\\s")[0];
+        String[] name = this.name.split("\\s");
+        return name[1] + " " + name[0];
     }
 }
