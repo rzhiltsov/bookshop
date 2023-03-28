@@ -1,4 +1,4 @@
---authors
+--author
 INSERT INTO author (name)
 VALUES
   ('Jesse Hardin'),
@@ -27,8 +27,8 @@ VALUES
   ('Sara Alston'),
   ('Bo Castro');
 
---books
-INSERT INTO books (title,price_old,price,author_id)
+--book
+INSERT INTO book (title,price_old,price,author_id)
 VALUES
   ('Clindamycin HCl','$60.60','$43.14',6),
   ('Meloxicam','$94.15','$41.06',13),

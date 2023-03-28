@@ -1,14 +1,19 @@
-package com.example.MyBookShopApp.data;
+package skbx.example.struct.book.links;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "author")
-public class Author {
+@Table(name = "book2user_type")
+public class Book2UserTypeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    private String code;
+
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String name;
 
     public int getId() {
@@ -19,17 +24,19 @@ public class Author {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        String[] name = this.name.split("\\s");
-        return name[1] + " " + name[0];
     }
 }
