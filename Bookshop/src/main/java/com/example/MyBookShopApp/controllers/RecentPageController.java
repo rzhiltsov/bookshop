@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RecentPageController {
 
-    @GetMapping("/books/recent")
+    @GetMapping("/books/recentPage")
     public String recentPage() {
         return "/books/recent";
     }

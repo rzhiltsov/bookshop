@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PopularPageController {
 
-    @GetMapping("/books/popular")
+    @GetMapping("/books/popularPage")
     public String popularPage() {
         return "/books/popular";
     }

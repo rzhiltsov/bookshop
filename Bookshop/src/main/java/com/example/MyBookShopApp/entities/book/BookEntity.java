@@ -4,7 +4,6 @@ import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -20,7 +19,6 @@ public class BookEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    //@ColumnDefault("0")
     @Column(columnDefinition = "SMALLINT NOT NULL DEFAULT 0")
     private short discount;
 
@@ -30,13 +28,19 @@ public class BookEntity {
     @Column(columnDefinition = "SMALLINT NOT NULL")
     private short isBestseller;
 
+    @Column(columnDefinition = "REAL NOT NULL DEFAULT 0")
+    private double rating;
+
+    @Column(columnDefinition = "REAL NOT NULL DEFAULT 0")
+    private double popularity;
+
     @Column(columnDefinition = "INT NOT NULL")
     private int price;
 
     @Column(columnDefinition = "DATE NOT NULL")
     private LocalDate pubDate;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String slug;
 
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")

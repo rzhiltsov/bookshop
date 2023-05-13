@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Bookshop</title>
@@ -88,10 +88,10 @@
                     <li th:class="'menu-item' + (${act2} ?: '')"><a class="menu-link" href="/genres"
                                                                     th:text="#{header.genres}">Жанры</a>
                     </li>
-                    <li th:class="'menu-item' + (${act3} ?: '')"><a class="menu-link" href="/books/recent"
+                    <li th:class="'menu-item' + (${act3} ?: '')"><a class="menu-link" href="/books/recentPage"
                                                                     th:text="#{header.recent}">Новинки</a>
                     </li>
-                    <li th:class="'menu-item' + (${act4} ?: '')"><a class="menu-link" href="/books/popular"
+                    <li th:class="'menu-item' + (${act4} ?: '')"><a class="menu-link" href="/books/popularPage"
                                                                     th:text="#{header.popular}">Популярное</a>
                     </li>
                     <li th:class="'menu-item' + (${act5} ?: '')"><a class="menu-link" href="/authors"

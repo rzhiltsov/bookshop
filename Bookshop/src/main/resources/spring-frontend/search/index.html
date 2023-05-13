@@ -9,7 +9,7 @@
 <html class="ie9" lang="ru">
 <![endif]-->
 <!--[if gt IE 9]><!-->
-<html lang="ru"> <!--<![endif]-->
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
 <head>
     <title>Bookshop</title>
     <meta content="Описание страницы" name="description">
@@ -18,7 +18,7 @@
     <!--meta( http-equiv="cache-control" content="no-cache")-->
     <!--meta( http-equiv="expires" content="0")-->
     <!--link(rel="preload" href="assets/css/extra.min.css?v=" + version as="style" crossorigin="anonymous")-->
-    <link href="favicon.ico" rel="shortcut icon">
+    <link href="/favicon.ico" rel="shortcut icon">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-SemiBold.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
@@ -50,7 +50,7 @@ p.error-browser
                 <div class="search">
                     <form action="#" class="form form_search" data-searchlimit="20" method="post">
                         <input class="search-input" id="querypage" name="querypage" placeholder="Search over 30 million book titles"
-                               type="text" value="Техника"/>
+                               type="text" value="Техника" th:value="${query}"/>
                         <button class="search-button" id="searchpage" name="searchpage" type="submit">Поиск
                         </button>
                     </form>
@@ -58,328 +58,29 @@ p.error-browser
             </div>
             <div class="Section Section_close">
                 <header class="Section-header">
-                    <h2 class="Section-title Middle-searchHeader">Найдено 40 книг
-                    </h2>
+                    <h2 class="Section-title Middle-searchHeader" th:text="${resultLabel}">Найдено 40 книг</h2>
                 </header>
                 <div class="Cards Cards_search Cards_refresh">
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
+                    <div class="Card" th:each="book : ${foundBooks}">
+                        <div class="Card-picture">
+                            <a href="#" th:href="'/books/' + ${book.slug}">
+                                <img alt="card.jpg" src="/assets/img/content/main/card.jpg" th:src="${book.image}"/>
+                                <div class="Card-sale" th:if="${book.discount != 0}" th:text="${book.discount} + '% скидка'">30% скидка</div>
+                                <div class="Card-ribbon" th:if="${book.isBestseller}"><span class="Card-ribbonText">Бестселлер</span></div>
+                            </a>
                         </div>
                         <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Техника</a>
-                            </strong>
-                            <div class="Card-description">Кондратенко Александр Петрович
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽300.00</span><span class="Card-price">₽190.00</span>
+                            <strong class="Card-title"><a href="#" th:href="'/books/' + ${book.slug}" th:text="${book.title}">Техника</a></strong>
+                            <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
+                            <div class="Card-cost">
+                                <span class="Card-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽300.00</span>
+                                <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽190.00</span>
                             </div>
                         </div>
                     </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 5 класс. Английский в фокусе.
-                                Рабочая тетрадь. ФГОС</a>
-                            </strong>
-                            <div class="Card-description">Ваулина, Дули, Подоляко
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽250.00</span><span class="Card-price">₽210.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Техника</a>
-                            </strong>
-                            <div class="Card-description">Кондратенко Александр Петрович
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽300.00</span><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 5 класс. Английский в фокусе.
-                                Рабочая тетрадь. ФГОС</a>
-                            </strong>
-                            <div class="Card-description">Ваулина, Дули, Подоляко
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽250.00</span><span class="Card-price">₽210.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Техника</a>
-                            </strong>
-                            <div class="Card-description">Кондратенко Александр Петрович
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽300.00</span><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 5 класс. Английский в фокусе.
-                                Рабочая тетрадь. ФГОС</a>
-                            </strong>
-                            <div class="Card-description">Ваулина, Дули, Подоляко
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽250.00</span><span class="Card-price">₽210.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Техника</a>
-                            </strong>
-                            <div class="Card-description">Кондратенко Александр Петрович
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽300.00</span><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 5 класс. Английский в фокусе.
-                                Рабочая тетрадь. ФГОС</a>
-                            </strong>
-                            <div class="Card-description">Ваулина, Дули, Подоляко
-                            </div>
-                            <div class="Card-cost"><span class="Card-priceOld">₽250.00</span><span class="Card-price">₽210.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Английский язык. 4 класс. Английский в фокусе.
-                                Рабочая тетрадь</a>
-                            </strong>
-                            <div class="Card-description">Быкова, Дули, Эванс
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽190.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Card">
-                        <div class="Card-picture"><a href="#"><img alt="card.jpg"
-                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                            <div class="Card-sale">30% скидка
-                            </div>
-                            <div class="Card-ribbon"><span class="Card-ribbonText">Бестселлер</span>
-                            </div>
-                            <a class="Card-status" title="Куплена"><img alt="check.svg"
-                                                                        src="/assets/img/icons/check.svg"/></a>
-                        </div>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="#">Великая Отечественная война. 1941-1945</a>
-                            </strong>
-                            <div class="Card-description">Солопенко Алла, Меркулов Дмитрий
-                            </div>
-                            <div class="Card-cost"><span class="Card-price">₽50.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Cards-footer Cards-footer_center"><a class="btn btn_primary" data-refreshlimit="20"
-                                                                     data-refreshoffset="20" data-refreshquery="Техника"
-                                                                     data-refreshshow="search" href="#">Показать
-                        еще</a>
+                    <div th:if="${foundBooks.size == 20}" class="Cards-footer Cards-footer_center">
+                        <a class="btn btn_primary" data-refreshlimit="20" data-refreshoffset="0" data-refreshquery="Техника" th:data-refreshquery="${query}"
+                           data-refreshshow="search" href="#">Показать еще</a>
                     </div>
                 </div>
             </div>

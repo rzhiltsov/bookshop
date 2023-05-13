@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "author")
+@Table(name = "author", uniqueConstraints = @UniqueConstraint(name = "author_slug_u_key", columnNames = "slug"))
 public class AuthorEntity {
 
     @Id
@@ -22,7 +22,7 @@ public class AuthorEntity {
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String photo;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String slug;
 
     @ManyToMany

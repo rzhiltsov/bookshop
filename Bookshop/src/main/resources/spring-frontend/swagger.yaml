@@ -22,9 +22,9 @@ paths:
   /books/recommended:
     get:
       tags:
-        - recomended
+        - recommended
       summary: Show recommended books
-      operationId: recomended
+      operationId: recommended
       parameters:
         - name: offset
           in: query
@@ -863,7 +863,7 @@ definitions:
       Hash:
         type: string
         example: qiyh4XPJGsOZ2MEAyLkfWqeQ
-      Summ:
+      Sum:
         type: integer
         format: int
         example: 12345

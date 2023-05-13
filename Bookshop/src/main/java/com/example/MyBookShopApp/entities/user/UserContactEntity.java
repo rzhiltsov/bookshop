@@ -2,7 +2,6 @@ package com.example.MyBookShopApp.entities.user;
 
 import com.example.MyBookShopApp.entities.enums.ContactType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
 

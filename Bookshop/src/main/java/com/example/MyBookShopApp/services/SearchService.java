@@ -7,20 +7,20 @@ import com.example.MyBookShopApp.repositories.AuthorRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BookService {
+public class SearchService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+    public SearchService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
     }
@@ -43,31 +43,23 @@ public class BookService {
         return book;
     }
 
-    public List<Book> getRecommendedBooks(int offset, int limit) {
+    public List<Book> getFoundBooks(String query, int offset, int limit) {
         ArrayList<Book> books = new ArrayList<>(limit);
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("rating", "id").descending());
-        bookRepository.findAll(pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
-        return books;
-    }
-
-    public List<Book> getRecentBooks(int offset, int limit) {
-        return getRecentBooks(null, null, offset, limit);
-    }
-
-    public List<Book> getRecentBooks(String from, String to, int offset, int limit) {
-        ArrayList<Book> books = new ArrayList<>(limit);
-        from = from == null ? "-infinity" : from;
-        to = to == null ? "infinity" : to;
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        bookRepository.findBookEntitiesByPubDate(from, to, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
+        bookRepository.findBookEntitiesByPattern(query, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
         return books;
     }
 
-    public List<Book> getPopularBooks(int offset, int limit) {
-        ArrayList<Book> books = new ArrayList<>(limit);
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("popularity", "id").descending());
-        bookRepository.findAll(pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
-        return books;
+    public String getResultLabel(String query) {
+        int booksCount = bookRepository.findBookEntitiesByPattern(query, Pageable.unpaged()).size();
+        if (query == null) {
+            return "Поисковый запрос не задан";
+        } else if (booksCount == 0) {
+            return "По вашему запросу книги не найдены";
+        } else if (booksCount % 10 == 1 && booksCount % 100 != 11) {
+            return "Найдена " + booksCount + " книга";
+        } else if (booksCount % 10 == 2 || booksCount % 10 == 3 || booksCount % 10 == 4) {
+            return "Найдено " + booksCount + " книги";
+        } else return "Найдено " + booksCount + " книг";
     }
-
 }
