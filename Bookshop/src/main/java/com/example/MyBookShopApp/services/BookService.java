@@ -56,8 +56,8 @@ public class BookService {
 
     public List<Book> getRecentBooks(String from, String to, int offset, int limit) {
         ArrayList<Book> books = new ArrayList<>(limit);
-        from = from == null ? "-infinity" : from;
-        to = to == null ? "infinity" : to;
+        from = from == null || from.isEmpty() ? "-infinity" : from;
+        to = to == null || to.isEmpty() ? "infinity" : to;
         PageRequest pageRequest = PageRequest.of(offset, limit);
         bookRepository.findBookEntitiesByPubDate(from, to, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
         return books;
