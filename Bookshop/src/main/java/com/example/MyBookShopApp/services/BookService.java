@@ -58,7 +58,7 @@ public class BookService {
         ArrayList<Book> books = new ArrayList<>(limit);
         from = from == null || from.isEmpty() ? "-infinity" : from;
         to = to == null || to.isEmpty() ? "infinity" : to;
-        PageRequest pageRequest = PageRequest.of(offset, limit);
+        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("pubDate", "id").descending());
         bookRepository.findBookEntitiesByPubDate(from, to, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
         return books;
     }
@@ -67,6 +67,13 @@ public class BookService {
         ArrayList<Book> books = new ArrayList<>(limit);
         PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("popularity", "id").descending());
         bookRepository.findAll(pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
+        return books;
+    }
+
+    public List<Book> getBooksByTag(String slug, int offset, int limit) {
+        ArrayList<Book> books = new ArrayList<>(limit);
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        bookRepository.findBookEntitiesByTagSlug(slug, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
         return books;
     }
 

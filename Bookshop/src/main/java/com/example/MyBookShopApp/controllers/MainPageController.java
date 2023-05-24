@@ -2,6 +2,7 @@ package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.dto.Book;
 import com.example.MyBookShopApp.services.BookService;
+import com.example.MyBookShopApp.services.TagService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,11 +19,13 @@ import java.util.List;
 public class MainPageController {
 
     private final BookService bookService;
+    private final TagService tagService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public MainPageController(BookService bookService, ObjectMapper objectMapper) {
+    public MainPageController(BookService bookService, TagService tagService, ObjectMapper objectMapper) {
         this.bookService = bookService;
+        this.tagService = tagService;
         this.objectMapper = objectMapper;
     }
 
@@ -31,6 +34,7 @@ public class MainPageController {
         model.addAttribute("recommendedBooks", bookService.getRecommendedBooks(0, 6));
         model.addAttribute("recentBooks", bookService.getRecentBooks(0, 6));
         model.addAttribute("popularBooks", bookService.getPopularBooks(0, 6));
+        model.addAttribute("tags", tagService.getAllTags());
         return "index";
     }
 

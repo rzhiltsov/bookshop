@@ -2,6 +2,7 @@ package com.example.MyBookShopApp.entities.book;
 
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
+import com.example.MyBookShopApp.entities.tag.TagEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import jakarta.persistence.*;
 
@@ -55,6 +56,9 @@ public class BookEntity {
     @ManyToMany(mappedBy = "books")
     private Set<UserEntity> users;
 
+    @ManyToMany(mappedBy = "books")
+    private Set<TagEntity> tags;
+
     public int getId() {
         return id;
     }
@@ -93,6 +97,22 @@ public class BookEntity {
 
     public void setIsBestseller(short isBestseller) {
         this.isBestseller = isBestseller;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
     }
 
     public int getPrice() {
@@ -149,5 +169,13 @@ public class BookEntity {
 
     public void setUsers(Set<UserEntity> users) {
         this.users = users;
+    }
+
+    public Set<TagEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TagEntity> tags) {
+        this.tags = tags;
     }
 }
