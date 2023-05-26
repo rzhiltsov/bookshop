@@ -3,7 +3,7 @@ package com.example.MyBookShopApp.entities.author;
 import com.example.MyBookShopApp.entities.book.BookEntity;
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "author")
@@ -29,7 +29,7 @@ public class AuthorEntity {
     @JoinTable(name = "book2author",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private Set<BookEntity> books;
+    private List<BookEntity> books;
 
     public int getId() {
         return id;
@@ -71,11 +71,11 @@ public class AuthorEntity {
         this.slug = slug;
     }
 
-    public Set<BookEntity> getBooks() {
+    public List<BookEntity> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<BookEntity> books) {
+    public void setBooks(List<BookEntity> books) {
         this.books = books;
     }
 

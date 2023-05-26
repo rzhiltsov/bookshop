@@ -27,11 +27,12 @@ public class TagService {
             else if (size < 15) return "Tag";
             else if (size < 18) return "Tag Tag_md";
             else return "Tag Tag_lg";
-        }, (v1, v2) -> v2, () -> new TreeMap<>(Comparator.comparing(TagEntity::getName))));
+        }, (v1, v2) -> "", () -> new TreeMap<>(Comparator.comparing(TagEntity::getName))));
     }
 
     public String getTagName(String slug) {
-        if (tagRepository.findTagEntityBySlug(slug) == null) return "";
-        else return tagRepository.findTagEntityBySlug(slug).getName();
+        TagEntity tagEntity = tagRepository.findTagEntityBySlug(slug);
+        if (tagEntity == null) return "";
+        else return tagEntity.getName();
     }
 }

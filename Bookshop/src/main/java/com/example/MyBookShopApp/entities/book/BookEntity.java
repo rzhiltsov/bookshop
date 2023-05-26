@@ -7,7 +7,7 @@ import com.example.MyBookShopApp.entities.user.UserEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "book")
@@ -48,16 +48,16 @@ public class BookEntity {
     private String title;
 
     @ManyToMany(mappedBy = "books")
-    private Set<AuthorEntity> authors;
+    private List<AuthorEntity> authors;
 
     @ManyToMany(mappedBy = "books")
-    private Set<GenreEntity> genres;
+    private List<GenreEntity> genres;
 
     @ManyToMany(mappedBy = "books")
-    private Set<UserEntity> users;
+    private List<UserEntity> users;
 
     @ManyToMany(mappedBy = "books")
-    private Set<TagEntity> tags;
+    private List<TagEntity> tags;
 
     public int getId() {
         return id;
@@ -147,35 +147,35 @@ public class BookEntity {
         this.title = title;
     }
 
-    public Set<AuthorEntity> getAuthors() {
+    public List<AuthorEntity> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<AuthorEntity> authors) {
+    public void setAuthors(List<AuthorEntity> authors) {
         this.authors = authors;
     }
 
-    public Set<GenreEntity> getGenres() {
+    public List<GenreEntity> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<GenreEntity> genres) {
+    public void setGenres(List<GenreEntity> genres) {
         this.genres = genres;
     }
 
-    public Set<UserEntity> getUsers() {
+    public List<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UserEntity> users) {
+    public void setUsers(List<UserEntity> users) {
         this.users = users;
     }
 
-    public Set<TagEntity> getTags() {
+    public List<TagEntity> getTags() {
         return tags;
     }
 
-    public void setTags(Set<TagEntity> tags) {
+    public void setTags(List<TagEntity> tags) {
         this.tags = tags;
     }
 }

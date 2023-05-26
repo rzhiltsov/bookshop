@@ -78,7 +78,7 @@ p.error-browser
                             </div>
                         </div>
                     </div>
-                    <div class="Cards-footer Cards-footer_center" th:style="${foundBooks.size < 20 ? 'display: none;' : ''}">
+                    <div class="Cards-footer Cards-footer_center" th:style="${foundBooks.size() < 20 ? 'display: none;' : ''}">
                         <a class="btn btn_primary" data-refreshlimit="20" data-refreshoffset="0" data-refreshquery="Техника" th:data-refreshquery="${query}"
                            data-refreshshow="search" href="#">Показать еще</a>
                     </div>

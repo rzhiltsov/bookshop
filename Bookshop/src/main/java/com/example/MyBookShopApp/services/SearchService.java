@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,17 +43,16 @@ public class SearchService {
     }
 
     public List<Book> getFoundBooks(String query, int offset, int limit) {
-        ArrayList<Book> books = new ArrayList<>(limit);
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        bookRepository.findBookEntitiesByPattern(query, pageRequest).forEach(bookEntity -> books.add(createBook(bookEntity)));
-        return books;
+        return bookRepository.findBookEntitiesByPattern(query, pageRequest).stream().map(this::createBook).toList();
     }
 
     public String getResultLabel(String query) {
-        int booksCount = bookRepository.findBookEntitiesByPattern(query, Pageable.unpaged()).size();
         if (query == null) {
             return "Поисковый запрос не задан";
-        } else if (booksCount == 0) {
+        }
+        int booksCount = bookRepository.findBookEntitiesByPattern(query, Pageable.unpaged()).size();
+        if (booksCount == 0) {
             return "По вашему запросу книги не найдены";
         } else if (booksCount % 10 == 1 && booksCount % 100 != 11) {
             return "Найдена " + booksCount + " книга";

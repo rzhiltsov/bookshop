@@ -4,7 +4,7 @@ import com.example.MyBookShopApp.entities.book.BookEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +30,7 @@ public class UserEntity {
     @JoinTable(name = "book2user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private Set<BookEntity> books;
+    private List<BookEntity> books;
 
     public int getId() {
         return id;
@@ -72,11 +72,11 @@ public class UserEntity {
         this.name = name;
     }
 
-    public Set<BookEntity> getBooks() {
+    public List<BookEntity> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<BookEntity> books) {
+    public void setBooks(List<BookEntity> books) {
         this.books = books;
     }
 }
