@@ -84,4 +84,8 @@ public class BookService {
         return books.stream().skip((long) offset * limit).limit(limit).toList();
     }
 
+    public List<Book> getBooksByAuthorSlug(String slug, int offset, int limit) {
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        return bookRepository.findBookEntitiesByAuthorSlug(slug, pageRequest).stream().map(this::createBook).toList();
+    }
 }

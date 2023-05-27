@@ -30,4 +30,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     @Query("SELECT books FROM TagEntity WHERE slug = ?1")
     public List<BookEntity> findBookEntitiesByTagSlug(String slug, Pageable pageable);
+
+    @Query("SELECT books FROM AuthorEntity WHERE slug = ?1")
+    public List<BookEntity> findBookEntitiesByAuthorSlug(String slug, Pageable pageable);
 }

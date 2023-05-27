@@ -54,11 +54,10 @@ p.error-browser
                         </a>
                     </div>
                     <div class="Authors-block" th:each="authorsEntry : ${authorsMap}">
-                        <h2 class="Authors-title" th:id="${authorsEntry.key.toLowerCase()}"
-                            th:text="${authorsEntry.key}">А</h2>
+                        <h2 class="Authors-title" th:id="${authorsEntry.key.toLowerCase()}" th:text="${authorsEntry.key}">А</h2>
                         <div class="Authors-letter">
                             <div class="Authors-item" th:each="author : ${authorsEntry.value}">
-                                <a href="/authors/slug.html" th:text="${author}">Абгарян Наринэ</a>
+                                <a href="/authors/slug.html" th:href="'/authors/' + ${author.slug}" th:text="${author}">Абгарян Наринэ</a>
                             </div>
                         </div>
                     </div>
