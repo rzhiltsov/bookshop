@@ -23,12 +23,12 @@
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-ExtraBold.woff2" rel="preload">
-    <link href="/assets/css/fonts.min.css?v=40130258" rel="stylesheet">
-    <link href="/assets/css/basic.min.css?v=40130258" rel="stylesheet">
-    <link href="/assets/css/extra.min.css?v=40130258" rel="stylesheet">
+    <link href="/assets/css/fonts.min.css?v=91228662" rel="stylesheet">
+    <link href="/assets/css/basic.min.css?v=91228662" rel="stylesheet">
+    <link href="/assets/css/extra.min.css?v=91228662" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-    <script defer src="/assets/js/scripts.min.js?v=40130258"></script>
+    <script defer src="/assets/js/scripts.min.js?v=91228662"></script>
 </head>
 <body class="Site">
 <!--if lt IE 8
@@ -47,15 +47,16 @@ p.error-browser
             <ul class="breadcrumbs">
                 <li class="breadcrumbs-item"><a href="/">Главная</a>
                 </li>
-                <li class="breadcrumbs-item"><a href="/genres">Книги</a>
-                </li>
-                <li class="breadcrumbs-item breadcrumbs-item_current">
-                    <span th:text="${author.name}">Борис Васильевич Бедный</span>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span th:text="${name}">Психологическая проза</span>
                 </li>
             </ul>
-            <h1 class="Middle-title" th:text="${author.name}">Борис Васильевич Бедный
-            </h1>
             <div class="Section">
+                <div class="Section-header">
+                    <h1 class="Section-title" th:text="${name}">Психологическая проза
+                    </h1>
+                    <div class="Section-header-links"><a class="Section-header-link" href="/#tags">Все тэги</a>
+                    </div>
+                </div>
                 <div class="Cards Cards_refresh">
                     <div class="Card" th:each="book : ${books}">
                         <a class="Card-picture" href="/books/slug.html" th:href="'/books/' + ${book.slug}">
@@ -70,13 +71,13 @@ p.error-browser
                             <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
                             <div class="Card-cost">
                                 <span class="Card-priceOld" th:if="${book.discount} != 0" th:text="'₽' + ${book.price}">₽500.00</span>
-                                <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽390.00</span>
+                                <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽390.00</span>
                             </div>
                         </div>
                     </div>
                     <div class="Cards-footer Cards-footer_center" th:style="${books.size() < 20 ? 'display: none;' : ''}">
-                        <a class="btn btn_primary" data-refreshid="10" th:data-refreshid="${author.slug}" data-refreshlimit="20"
-                           data-refreshoffset="0" data-refreshshow="author" href="#">Показать еще</a>
+                        <a class="btn btn_primary" data-refreshid="10" th:data-refreshid="${slug}" data-refreshlimit="20"
+                           data-refreshoffset="0" data-refreshshow="tag" href="#">Показать еще</a>
                     </div>
                 </div>
             </div>

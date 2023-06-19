@@ -21,6 +21,7 @@ public class GenreService {
     }
 
     private Genre createGenre(GenreEntity genreEntity) {
+        if (genreEntity == null) return null;
         Genre genre = new Genre();
         genre.setSlug(genreEntity.getSlug());
         genre.setName(genreEntity.getName());

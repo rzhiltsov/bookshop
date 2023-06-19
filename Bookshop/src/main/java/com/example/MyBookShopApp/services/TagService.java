@@ -32,7 +32,7 @@ public class TagService {
 
     public String getTagName(String slug) {
         TagEntity tagEntity = tagRepository.findTagEntityBySlug(slug);
-        if (tagEntity == null) return "";
+        if (tagEntity == null) return null;
         else return tagEntity.getName();
     }
 }

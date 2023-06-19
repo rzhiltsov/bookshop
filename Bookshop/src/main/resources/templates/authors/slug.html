@@ -105,7 +105,7 @@ p.error-browser
                                         <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
                                         <div class="Card-cost">
                                             <span class="Card-priceOld" th:if="${book.discount} != 0" th:text="'₽' + ${book.price}">₽500.00</span>
-                                            <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽390.00</span>
+                                            <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽390.00</span>
                                         </div>
                                     </div>
                                 </div>

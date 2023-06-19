@@ -23,12 +23,12 @@
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-ExtraBold.woff2" rel="preload">
-    <link href="/assets/css/fonts.min.css?v=91228662" rel="stylesheet">
-    <link href="/assets/css/basic.min.css?v=91228662" rel="stylesheet">
-    <link href="/assets/css/extra.min.css?v=91228662" rel="stylesheet">
+    <link href="/assets/css/fonts.min.css?v=45035206" rel="stylesheet">
+    <link href="/assets/css/basic.min.css?v=45035206" rel="stylesheet">
+    <link href="/assets/css/extra.min.css?v=45035206" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-    <script defer src="/assets/js/scripts.min.js?v=91228662"></script>
+    <script defer src="/assets/js/scripts.min.js?v=45035206"></script>
 </head>
 <body class="Site">
 <!--if lt IE 8
@@ -40,27 +40,27 @@ p.error-browser
         | браузера здесь&nbsp;
     | для правильного отображения сайта.
 -->
-<header th:replace="~{fragments/common_header_fragment :: header_fragment}"></header>
+<header th:replace="~{fragments/common_header_fragment :: header_fragment(act4=' menu-item_ACTIVE')}"></header>
 <div class="Middle">
     <div class="wrap">
         <main class="Middle-main">
             <ul class="breadcrumbs">
                 <li class="breadcrumbs-item"><a href="/">Главная</a>
                 </li>
-                <li class="breadcrumbs-item breadcrumbs-item_current"><span th:text="${name}">Психологическая проза</span>
+                <li class="breadcrumbs-item"><a href="/genres">Книги</a>
+                </li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>Популярное</span>
                 </li>
             </ul>
             <div class="Section">
                 <div class="Section-header">
-                    <h1 class="Section-title" th:text="${name}">Психологическая проза
+                    <h1 class="Section-title">Популярное
                     </h1>
-                    <div class="Section-header-links"><a class="Section-header-link" href="/#tags">Все тэги</a>
-                    </div>
                 </div>
                 <div class="Cards Cards_refresh">
-                    <div class="Card" th:each="book : ${books}">
+                    <div class="Card" th:each="book : ${popularBooks}">
                         <a class="Card-picture" href="/books/slug.html" th:href="'/books/' + ${book.slug}">
-                            <img alt="card.jpg" src="/assets/img/content/main/card.jpg" th:src ="${book.image}"/>
+                            <img alt="card.jpg" src="/assets/img/content/main/card.jpg" th:src="${book.image}"/>
                             <div class="Card-sale" th:if="${book.discount != 0}" th:text="${book.discount} + '% скидка'">30% скидка</div>
                             <div class="Card-ribbon" th:if="${book.isBestseller}"><span class="Card-ribbonText">Бестселлер</span></div>
                         </a>
@@ -68,16 +68,18 @@ p.error-browser
                             <strong class="Card-title">
                                 <a href="/books/slug.html" th:href="'/books/' + ${book.slug}" th:text="${book.title}">Техника</a>
                             </strong>
-                            <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
+                            <div class="Card-description" th:text="${book.authors}">Кондратенко Валерий
+                                Петрович
+                            </div>
                             <div class="Card-cost">
-                                <span class="Card-priceOld" th:if="${book.discount} != 0" th:text="'₽' + ${book.price}">₽500.00</span>
-                                <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽390.00</span>
+                                <span class="Card-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽300.00</span>
+                                <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽190.00</span>
                             </div>
                         </div>
                     </div>
-                    <div class="Cards-footer Cards-footer_center" th:style="${books.size() < 20 ? 'display: none;' : ''}">
-                        <a class="btn btn_primary" data-refreshid="10" th:data-refreshid="${slug}" data-refreshlimit="20"
-                           data-refreshoffset="0" data-refreshshow="tag" href="#">Показать еще</a>
+                    <div class="Cards-footer Cards-footer_center" th:style="${popularBooks.size() < 20 ? 'display: none;' : ''}">
+                        <a class="btn btn_primary" data-refreshlimit="20" data-refreshoffset="20"
+                           data-refreshshow="popular" href="#">Показать еще</a>
                     </div>
                 </div>
             </div>

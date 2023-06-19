@@ -25,6 +25,7 @@ public class SearchService {
     }
 
     private Book createBook(BookEntity bookEntity) {
+        if (bookEntity == null) return null;
         Book book = new Book();
         book.setDescription(bookEntity.getDescription());
         book.setImage(bookEntity.getImage());
@@ -36,7 +37,7 @@ public class SearchService {
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
         book.setPubDate(bookEntity.getPubDate());
-        List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookId(bookEntity.getId());
+        List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);
         return book;

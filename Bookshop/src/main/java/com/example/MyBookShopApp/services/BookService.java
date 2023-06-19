@@ -29,6 +29,7 @@ public class BookService {
     }
 
     private Book createBook(BookEntity bookEntity) {
+        if (bookEntity == null) return null;
         Book book = new Book();
         book.setDescription(bookEntity.getDescription());
         book.setImage(bookEntity.getImage());
@@ -40,14 +41,14 @@ public class BookService {
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
         book.setPubDate(bookEntity.getPubDate());
-        List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookId(bookEntity.getId());
+        List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);
         return book;
     }
 
     public List<Book> getRecommendedBooks(int offset, int limit) {
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("rating").descending());
+        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("rating", "id").descending());
         return bookRepository.findAll(pageRequest).stream().map(this::createBook).toList();
     }
 
@@ -58,21 +59,21 @@ public class BookService {
     public List<Book> getRecentBooks(String from, String to, int offset, int limit) {
         from = from == null || from.isEmpty() ? "-infinity" : from;
         to = to == null || to.isEmpty() ? "infinity" : to;
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("pubDate").descending());
+        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("pubDate", "id").descending());
         return bookRepository.findBookEntitiesByPubDate(from, to, pageRequest).stream().map(this::createBook).toList();
     }
 
     public List<Book> getPopularBooks(int offset, int limit) {
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("popularity").descending());
+        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("popularity", "id").descending());
         return bookRepository.findAll(pageRequest).stream().map(this::createBook).toList();
     }
 
-    public List<Book> getBooksByTag(String slug, int offset, int limit) {
+    public List<Book> getBooksByTagSlug(String slug, int offset, int limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return bookRepository.findBookEntitiesByTagSlug(slug, pageRequest).stream().map(this::createBook).toList();
     }
 
-    public List<Book> getBooksByGenre(String slug, int offset, int limit) {
+    public List<Book> getBooksByGenreSlug(String slug, int offset, int limit) {
         TreeSet<Book> books = new TreeSet<>(Comparator.comparing(Book::getTitle));
         GenreEntity genreEntity = genreRepository.findGenreEntityBySlug(slug);
         ArrayDeque<GenreEntity> children = new ArrayDeque<>();
@@ -87,5 +88,13 @@ public class BookService {
     public List<Book> getBooksByAuthorSlug(String slug, int offset, int limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return bookRepository.findBookEntitiesByAuthorSlug(slug, pageRequest).stream().map(this::createBook).toList();
+    }
+
+    public Book getBookBySlug(String slug) {
+        return createBook(bookRepository.findBookEntityBySlug(slug));
+    }
+
+    public BookEntity getBookEntityBySlug(String slug) {
+        return bookRepository.findBookEntityBySlug(slug);
     }
 }

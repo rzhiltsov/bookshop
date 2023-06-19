@@ -24,8 +24,7 @@ public class AuthorService {
     }
 
     public AuthorEntity getAuthorBySlug(String slug) {
-        AuthorEntity authorEntity = authorRepository.findAuthorEntityBySlug(slug);
-        return authorEntity == null ? new AuthorEntity() : authorEntity;
+        return authorRepository.findAuthorEntityBySlug(slug);
     }
 
     public List<String> getAuthorDescription(String slug) {
@@ -57,5 +56,9 @@ public class AuthorService {
         description.add(openedText);
         description.add(hiddenText);
         return description;
+    }
+
+    public List<AuthorEntity> getAuthorsByBookIdOrdered(int bookId) {
+        return authorRepository.findAuthorEntitiesByBookIdOrdered(bookId);
     }
 }

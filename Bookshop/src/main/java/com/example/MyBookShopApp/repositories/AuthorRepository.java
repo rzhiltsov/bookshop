@@ -12,7 +12,7 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, Integer> {
 
     @Query("FROM AuthorEntity a JOIN Book2AuthorEntity b2a ON a.id = b2a.authorId " +
             "WHERE b2a.bookId = ?1 ORDER BY b2a.sortIndex")
-    List<AuthorEntity> findAuthorEntitiesByBookId(int bookId);
+    List<AuthorEntity> findAuthorEntitiesByBookIdOrdered(int bookId);
 
     AuthorEntity findAuthorEntityBySlug(String slug);
 }

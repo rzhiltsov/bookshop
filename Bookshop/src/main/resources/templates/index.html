@@ -71,7 +71,7 @@ p.error-browser
                                         </div>
                                         <div class="Card-cost">
                                             <span class="Card-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽300.00</span>
-                                            <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽190.00</span>
+                                            <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽190.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +108,7 @@ p.error-browser
                                         <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
                                         <div class="Card-cost">
                                             <span class="Card-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽500.00</span>
-                                            <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽390.00</span>
+                                            <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽390.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -145,7 +145,7 @@ p.error-browser
                                         <div class="Card-description" th:text="${book.authors}">Кондратенко Александр Петрович</div>
                                         <div class="Card-cost">
                                             <span class="Card-priceOld" th:if="${book.discount} != 0" th:text="'₽' + ${book.price}">₽500.00</span>
-                                            <span class="Card-price" th:text="'₽' + ${book.discount != 0 ? book.discountPrice : book.price}">₽390.00</span>
+                                            <span class="Card-price" th:text="'₽' + ${book.discountPrice}">₽390.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -165,8 +165,8 @@ p.error-browser
             <h2 class="Middle-title">Книги по тегам
             </h2>
             <div class="Tags" id="tags">
-                <div th:each="tagEntry : ${tags}" class="Tag Tag_xs" th:class="${tagEntry.value}">
-                    <a href="/tags/index.html" th:href="'/tags/' + ${tagEntry.key.slug}" th:text="${tagEntry.key.name}">современная литература</a>
+                <div th:each="tagEntry : ${tags}" class="Tag Tag_xs" th:class="${tagEntry.getValue()}">
+                    <a href="/tags/index.html" th:href="'/tags/' + ${tagEntry.getKey().slug}" th:text="${tagEntry.getKey().name}">современная литература</a>
                 </div>
             </div>
         </main>

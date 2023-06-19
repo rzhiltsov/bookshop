@@ -50,13 +50,13 @@ p.error-browser
                 <div class="Authors">
                     <div class="Authors-links">
                         <a class="Authors-link" th:each="authorsEntry : ${authorsMap}"
-                           th:href="'#' + ${authorsEntry.key.toLowerCase()}" th:text="${authorsEntry.key}">А
+                           th:href="'#' + ${authorsEntry.getKey().toLowerCase()}" th:text="${authorsEntry.getKey()}">А
                         </a>
                     </div>
                     <div class="Authors-block" th:each="authorsEntry : ${authorsMap}">
-                        <h2 class="Authors-title" th:id="${authorsEntry.key.toLowerCase()}" th:text="${authorsEntry.key}">А</h2>
+                        <h2 class="Authors-title" th:id="${authorsEntry.getKey().toLowerCase()}" th:text="${authorsEntry.getKey()}">А</h2>
                         <div class="Authors-letter">
-                            <div class="Authors-item" th:each="author : ${authorsEntry.value}">
+                            <div class="Authors-item" th:each="author : ${authorsEntry.getValue()}">
                                 <a href="/authors/slug.html" th:href="'/authors/' + ${author.slug}" th:text="${author}">Абгарян Наринэ</a>
                             </div>
                         </div>
