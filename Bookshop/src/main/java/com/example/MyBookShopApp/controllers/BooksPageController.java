@@ -77,6 +77,19 @@ public class BooksPageController {
         model.addAttribute("cartText", cartStatusText.get(0));
         model.addAttribute("cartAltText", cartStatusText.get(1));
         model.addAttribute("cartAmount", cookies.getOrDefault("CART", Set.of()).size());
+        List<String> keptStatusText = Arrays.asList("Отложить", "Отложено");
+        if (cookies.getOrDefault("KEPT", Set.of()).contains(slug)) {
+            Collections.reverse(cartStatusText);
+            model.addAttribute("keptClass", "btn btn_primary btn_outline btn_check");
+            model.addAttribute("keptCheck", true);
+        }
+        else {
+            model.addAttribute("keptClass", "btn btn_primary btn_outline");
+            model.addAttribute("keptCheck", false);
+        }
+        model.addAttribute("keptText", keptStatusText.get(0));
+        model.addAttribute("keptAltText", keptStatusText.get(1));
+        model.addAttribute("keptAmount", cookies.getOrDefault("KEPT", Set.of()).size());
         return "books/slug";
     }
 
@@ -85,7 +98,7 @@ public class BooksPageController {
     public ObjectNode changeBookStatus(@RequestParam Map<String, String> status, HttpServletRequest request, HttpServletResponse response) {
         if (status.get("status") == null || status.get("booksIds") == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         String changingStatus = status.get("status");
-        List<String> ids = List.of(status.get("booksIds").split(","));
+        List<String> ids = List.of(status.get("booksIds").split(", "));
         Map<String, Set<String>> cookies = Map.of();
         if (request.getCookies() == null) {
             if (!changingStatus.equals("UNLINK")) {
@@ -117,6 +130,7 @@ public class BooksPageController {
         ObjectNode result = objectMapper.createObjectNode();
         result.put("result", true);
         result.put("cartAmount", cookies.getOrDefault("CART", Set.of()).size());
+        result.put("keptAmount", cookies.getOrDefault("KEPT", Set.of()).size());
         return result;
     }
 

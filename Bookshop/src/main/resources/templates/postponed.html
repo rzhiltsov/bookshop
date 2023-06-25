@@ -9,7 +9,7 @@
 <html class="ie9" lang="ru">
 <![endif]-->
 <!--[if gt IE 9]><!-->
-<html lang="ru"> <!--<![endif]-->
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
 <head>
     <title>Bookshop</title>
     <meta content="Описание страницы" name="description">
@@ -47,17 +47,22 @@ p.error-browser
             <h1 class="Middle-title">Отложенное
             </h1>
             <form action="#" class="form Cart Cart_postponed" method="post">
-                <div class="Cart-product">
+                <div class="Cart-product" th:each="book : ${books}">
                     <div class="Cart-block Cart-block_row">
-                        <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img alt="card.jpg"
-                                                                                                   class="Cart-img"
-                                                                                                   src="/assets/img/content/main/card.jpg"/></a>
+                        <div class="Cart-block Cart-block_pict">
+                            <a class="Cart-pict" href="#" th:href="'/books/' + ${book.getKey().slug}">
+                                <img alt="card.jpg" class="Cart-img" src="/assets/img/content/main/card.jpg" th:src="${book.getKey().image}"/>
+                            </a>
                         </div>
                         <div class="Cart-block Cart-block_row">
                             <div class="Cart-block Cart-block_info">
-                                <div class="Cart-author"><a href="#">Борис Васильевич Бедный</a>
+                                <div class="Cart-author">
+                                    <span th:each="author : ${book.getValue()}">
+                                        <a href="#" th:href="'/authors/' + ${author[0]}" th:text="${author[1]}">Борис Васильевич Бедный</a><span th:text="${author[2]}"></span>
+                                    </span>
                                 </div>
-                                <div class="Cart-title"><a href="#">Жизнь</a>
+                                <div class="Cart-title">
+                                    <a href="#" th:href="'/books/' + ${book.getKey().slug}" th:text="${book.getKey().title}">Жизнь</a>
                                 </div>
                                 <div class="Cart-rating"><span class="Rating"><span class="Rating-stars"><span
                                         class="Rating-star Rating-star_view">
@@ -104,14 +109,14 @@ p.error-browser
                                 </div>
                                 <div class="Cart-buttons">
                                     <div class="Cart-btn">
-                                        <button class="btn btn_primary btn_outline" data-bookid="[1122]"
+                                        <button class="btn btn_primary btn_outline" data-bookid="[1122]" th:data-bookid="${book.getKey().slug}"
                                                 data-sendstatus="CART"><span class="btn-icon"><img
                                                 alt="shopping-basket.svg" src="/assets/img/icons/shopping-basket.svg"/></span><span
                                                 class="btn-content">Купить</span>
                                         </button>
                                     </div>
                                     <div class="Cart-btn">
-                                        <button class="btn btn_danger btn_outline" data-bookid="[1122]"
+                                        <button class="btn btn_danger btn_outline" data-bookid="[1122]" th:data-bookid="${book.getKey().slug}"
                                                 data-sendstatus="UNLINK"><span class="btn-icon"><img
                                                 alt="trash.svg" src="/assets/img/icons/trash.svg"/></span><span
                                                 class="btn-content">Удалить</span>
@@ -120,190 +125,21 @@ p.error-browser
                                 </div>
                             </div>
                             <div class="Cart-block Cart-block_price">
-                                <div class="Cart-priceTitle">Цена:
-                                </div>
-                                <div class="Cart-price">254 р.
-                                </div>
+                                <div class="Cart-priceTitle">Цена:</div>
+                                <div th:if="${book.getKey().discount != 0}" class="Cart-price Cart-price_old" th:text="${book.getKey().price} + ' р.'">254 р.</div>
+                                <div class="Cart-price" th:text="${book.getKey().discountPrice} + ' р.'">180 р.</div>
+                                <div th:if="${book.getKey().discount != 0}" class="Cart-sale" th:text="'-' + ${book.getKey().discount} + '%'">-30%</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="Cart-product">
-                    <div class="Cart-block Cart-block_row">
-                        <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img alt="card.jpg"
-                                                                                                   class="Cart-img"
-                                                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Cart-block Cart-block_row">
-                            <div class="Cart-block Cart-block_info">
-                                <div class="Cart-author"><a href="#">Борис Васильевич Маяковский</a>
-                                </div>
-                                <div class="Cart-title"><a href="#">Трубы</a>
-                                </div>
-                                <div class="Cart-rating"><span class="Rating"><span class="Rating-stars"><span
-                                        class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span></span></span>
-                                </div>
-                                <div class="Cart-buttons">
-                                    <div class="Cart-btn">
-                                        <button class="btn btn_primary btn_outline" data-bookid="[1133]"
-                                                data-sendstatus="CART"><span class="btn-icon"><img
-                                                alt="shopping-basket.svg" src="/assets/img/icons/shopping-basket.svg"/></span><span
-                                                class="btn-content">Купить</span>
-                                        </button>
-                                    </div>
-                                    <div class="Cart-btn">
-                                        <button class="btn btn_danger btn_outline" data-bookid="[1133]"
-                                                data-sendstatus="UNLINK"><span class="btn-icon"><img
-                                                alt="trash.svg" src="/assets/img/icons/trash.svg"/></span><span
-                                                class="btn-content">Удалить</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="Cart-block Cart-block_price">
-                                <div class="Cart-priceTitle">Цена:
-                                </div>
-                                <div class="Cart-price Cart-price_old">150 р.
-                                </div>
-                                <div class="Cart-price">100 р.
-                                </div>
-                                <div class="Cart-sale">-30%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="Cart-product">
-                    <div class="Cart-block Cart-block_row">
-                        <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img alt="card.jpg"
-                                                                                                   class="Cart-img"
-                                                                                                   src="/assets/img/content/main/card.jpg"/></a>
-                        </div>
-                        <div class="Cart-block Cart-block_row">
-                            <div class="Cart-block Cart-block_info">
-                                <div class="Cart-author"><a href="#">Борис Васильевич Бедный</a>
-                                </div>
-                                <div class="Cart-title"><a href="#">Жизнь</a>
-                                </div>
-                                <div class="Cart-rating"><span class="Rating"><span class="Rating-stars"><span
-                                        class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span><span class="Rating-star">
-                          <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                              <g>
-                                <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                      fill="#ffc000"></path>
-                              </g>
-                            </g>
-                          </svg></span></span></span>
-                                </div>
-                                <div class="Cart-buttons">
-                                    <div class="Cart-btn">
-                                        <button class="btn btn_primary btn_outline" data-bookid="[1111]"
-                                                data-sendstatus="CART"><span class="btn-icon"><img
-                                                alt="shopping-basket.svg" src="/assets/img/icons/shopping-basket.svg"/></span><span
-                                                class="btn-content">Купить</span>
-                                        </button>
-                                    </div>
-                                    <div class="Cart-btn">
-                                        <button class="btn btn_danger btn_outline" data-bookid="[1111]"
-                                                data-sendstatus="UNLINK"><span class="btn-icon"><img
-                                                alt="trash.svg" src="/assets/img/icons/trash.svg"/></span><span
-                                                class="btn-content">Удалить</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="Cart-block Cart-block_price">
-                                <div class="Cart-priceTitle">Цена:
-                                </div>
-                                <div class="Cart-price Cart-price_old">254 р.
-                                </div>
-                                <div class="Cart-price">180 р.
-                                </div>
-                                <div class="Cart-sale">-30%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div th:if="${books.size() == 0}" class="Cart-messageInfo">Отложенных книг нет</div>
                 <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">
                     </div>
                     <div class="Cart-block">
-                        <button class="btn btn_success btn_md Cart-buyAll" data-bookid="[1111, 1122, 1133]"
-                                data-sendstatus="CART">Купить все
+                        <button class="btn btn_success btn_md Cart-buyAll" data-bookid="[1111, 1122, 1133]" th:data-bookid="${slugs}"
+                                data-sendstatus="CART" th:disabled="${books.size() == 0}">Купить все
                         </button>
                     </div>
                 </div>

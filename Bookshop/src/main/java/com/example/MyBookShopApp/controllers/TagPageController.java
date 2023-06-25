@@ -48,6 +48,7 @@ public class TagPageController {
                     }));
         }
         model.addAttribute("cartAmount", cookies.getOrDefault("CART", Set.of()).size());
+        model.addAttribute("keptAmount", cookies.getOrDefault("KEPT", Set.of()).size());
     }
 
     @GetMapping("/tags/{slug}")

@@ -53,6 +53,7 @@ public class CartPageController {
         model.addAttribute("totalPrice", books.keySet().stream().mapToInt(Book::getPrice).sum());
         model.addAttribute("totalDiscountPrice", books.keySet().stream().mapToInt(Book::getDiscountPrice).sum());
         model.addAttribute("cartAmount", cookies.getOrDefault("CART", Set.of()).size());
+        model.addAttribute("keptAmount", cookies.getOrDefault("KEPT", Set.of()).size());
         return "cart";
     }
 }
