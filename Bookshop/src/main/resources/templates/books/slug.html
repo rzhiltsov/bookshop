@@ -72,7 +72,7 @@ p.error-browser
                             <div class="ProductCard-rating"><span class="ProductCard-titleProp">Рейтинг:</span>
                                 <button class="trigger trigger_dropdown" type="button">
                                     <div class="Rating Rating_noStyleLink"><span class="Rating-stars"><span
-                                            class="Rating-star Rating-star_view">
+                                            class="Rating-star Rating-star_view" th:class="'Rating-star' + ${book.rating >= 1 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -80,7 +80,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
+                          </svg></span><span class="Rating-star Rating-star_view" th:class="'Rating-star' + ${book.rating >= 2 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -88,7 +88,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star">
+                          </svg></span><span class="Rating-star" th:class="'Rating-star' + ${book.rating >= 3 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -96,7 +96,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star">
+                          </svg></span><span class="Rating-star" th:class="'Rating-star' + ${book.rating >= 4 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -104,7 +104,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star">
+                          </svg></span><span class="Rating-star" th:class="'Rating-star' + ${book.rating == 5 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -112,7 +112,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span></span><span class="Rating-title">(567)</span>
+                          </svg></span></span><span class="Rating-title" th:text="'(' + ${ratingsCount} + ')'">(567)</span>
                                     </div>
                                     <div class="modal modal_compression modal_dropdown">
                                         <div class="modal-window"><a class="modal-close"
@@ -160,7 +160,7 @@ p.error-browser
                                             fill="#ffc000"></path>
                                     </g>
                                   </g>
-                                </svg></span></span><span class="Rating-title">1</span></span><br><span
+                                </svg></span></span><span class="Rating-title" th:text="${ratings.getOrDefault(5, 0)}">1</span></span><br><span
                                                     class="Rating"><span class="Rating-stars"><span
                                                     class="Rating-star Rating-star_view">
                                 <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
@@ -202,7 +202,7 @@ p.error-browser
                                             fill="#ffc000"></path>
                                     </g>
                                   </g>
-                                </svg></span></span><span class="Rating-title">4</span></span><br><span
+                                </svg></span></span><span class="Rating-title" th:text="${ratings.getOrDefault(4, 0)}">4</span></span><br><span
                                                     class="Rating"><span class="Rating-stars"><span
                                                     class="Rating-star Rating-star_view">
                                 <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
@@ -244,7 +244,7 @@ p.error-browser
                                             fill="#ffc000"></path>
                                     </g>
                                   </g>
-                                </svg></span></span><span class="Rating-title">0</span></span><br><span
+                                </svg></span></span><span class="Rating-title" th:text="${ratings.getOrDefault(3, 0)}">0</span></span><br><span
                                                     class="Rating"><span class="Rating-stars"><span
                                                     class="Rating-star Rating-star_view">
                                 <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
@@ -286,7 +286,7 @@ p.error-browser
                                             fill="#ffc000"></path>
                                     </g>
                                   </g>
-                                </svg></span></span><span class="Rating-title">10</span></span><br><span class="Rating"><span
+                                </svg></span></span><span class="Rating-title" th:text="${ratings.getOrDefault(2, 0)}">10</span></span><br><span class="Rating"><span
                                                     class="Rating-stars"><span class="Rating-star Rating-star_view">
                                 <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                                   <g>
@@ -327,16 +327,17 @@ p.error-browser
                                             fill="#ffc000"></path>
                                     </g>
                                   </g>
-                                </svg></span></span><span class="Rating-title">3</span></span>
+                                </svg></span></span><span class="Rating-title" th:text="${ratings.getOrDefault(1, 0)}">3</span></span>
                                             </div>
                                         </div>
                                     </div>
                                 </button>
                             </div>
-                            <div class="ProductCard-assessment"><span
-                                    class="ProductCard-titleProp">Оцените книгу:</span><span class="Rating Rating_input"
-                                                                                             data-bookid="2121"><span
-                                    class="Rating-stars"><span class="Rating-star">
+                            <div class="ProductCard-assessment">
+                                <span class="ProductCard-titleProp">Оцените книгу:</span>
+                                <span class="Rating Rating_input" data-bookid="2121" th:data-bookid="${book.slug}">
+                                    <span class="Rating-stars">
+                                        <span class="Rating-star">
                         <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                           <g>
                             <g>

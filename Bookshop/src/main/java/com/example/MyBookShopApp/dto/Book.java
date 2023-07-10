@@ -12,17 +12,17 @@ public class Book {
 
     private String image;
 
-    private boolean isBestseller;
+    private boolean bestseller;
 
     private int price;
-
-    private LocalDate pubDate;
 
     private String slug;
 
     private String title;
 
     private String authors;
+
+    private int rating;
 
     public String getDescription() {
         return description;
@@ -56,12 +56,12 @@ public class Book {
         this.image = image;
     }
 
-    public boolean getIsBestseller() {
-        return isBestseller;
+    public boolean isBestseller() {
+        return bestseller;
     }
 
-    public void setIsBestseller(boolean isBestseller) {
-        this.isBestseller = isBestseller;
+    public void setBestseller(boolean bestseller) {
+        this.bestseller = bestseller;
     }
 
     public int getPrice() {
@@ -70,14 +70,6 @@ public class Book {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public LocalDate getPubDate() {
-        return pubDate;
-    }
-
-    public void setPubDate(LocalDate pubDate) {
-        this.pubDate = pubDate;
     }
 
     public String getSlug() {
@@ -102,5 +94,13 @@ public class Book {
 
     public void setAuthors(String authors) {
         this.authors = authors;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
-    @Query("FROM BookEntity WHERE pubDate BETWEEN CAST(?1 AS DATE) AND CAST(?2 AS DATE)")
+    @Query("FROM BookEntity WHERE pubDate BETWEEN CAST(?1 AS DATE) AND CAST(?2 AS DATE) ORDER BY pubDate DESC, id")
     List<BookEntity> findBookEntitiesByPubDate(String from, String to, Pageable pageable);
 
     @Query("FROM BookEntity WHERE title ILIKE %?1% " +
@@ -35,4 +35,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     public List<BookEntity> findBookEntitiesByAuthorSlug(String slug, Pageable pageable);
 
     public BookEntity findBookEntityBySlug(String slug);
+
+    @Query("FROM BookEntity b JOIN BookRatingEntity r ON b.id = r.book.id " +
+            "GROUP BY b.id ORDER BY AVG(r.value) DESC, b.id")
+    public List<BookEntity> findBookEntitiesOrderByRating(Pageable pageable);
 }

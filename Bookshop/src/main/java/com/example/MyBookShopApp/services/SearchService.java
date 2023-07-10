@@ -31,12 +31,11 @@ public class SearchService {
         book.setImage(bookEntity.getImage());
         book.setPrice(bookEntity.getPrice());
         book.setSlug(bookEntity.getSlug());
-        book.setIsBestseller(bookEntity.getIsBestseller() == 1);
+        book.setBestseller(bookEntity.getIsBestseller() == 1);
         book.setTitle(bookEntity.getTitle());
         book.setDiscount(bookEntity.getDiscount());
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
-        book.setPubDate(bookEntity.getPubDate());
         List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);

@@ -65,7 +65,7 @@ p.error-browser
                                     <a href="#" th:href="'/books/' + ${book.getKey().slug}" th:text="${book.getKey().title}">Жизнь</a>
                                 </div>
                                 <div class="Cart-rating"><span class="Rating"><span class="Rating-stars"><span
-                                        class="Rating-star Rating-star_view">
+                                        class="Rating-star Rating-star_view" th:class="'Rating-star' + ${book.getKey().rating >= 1 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -73,7 +73,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
+                          </svg></span><span class="Rating-star Rating-star_view" th:class="'Rating-star' + ${book.getKey().rating >= 2 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -81,7 +81,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star Rating-star_view">
+                          </svg></span><span class="Rating-star Rating-star_view" th:class="'Rating-star' + ${book.getKey().rating >= 3 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -89,7 +89,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star">
+                          </svg></span><span class="Rating-star" th:class="'Rating-star' + ${book.getKey().rating >= 4 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>
@@ -97,7 +97,7 @@ p.error-browser
                                       fill="#ffc000"></path>
                               </g>
                             </g>
-                          </svg></span><span class="Rating-star">
+                          </svg></span><span class="Rating-star" th:class="'Rating-star' + ${book.getKey().rating == 5 ? ' Rating-star_view' : ''}">
                           <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
                             <g>
                               <g>

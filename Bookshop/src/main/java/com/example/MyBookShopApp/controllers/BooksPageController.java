@@ -2,8 +2,10 @@ package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.tag.TagEntity;
 import com.example.MyBookShopApp.services.AuthorService;
+import com.example.MyBookShopApp.services.BookRatingService;
 import com.example.MyBookShopApp.services.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -27,12 +29,14 @@ public class BooksPageController {
 
     private final BookService bookService;
     private final AuthorService authorService;
+    private  final BookRatingService bookRatingService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public BooksPageController(BookService bookService, AuthorService authorService, ObjectMapper objectMapper) {
+    public BooksPageController(BookService bookService, AuthorService authorService, BookRatingService bookRatingService, ObjectMapper objectMapper) {
         this.bookService = bookService;
         this.authorService = authorService;
+        this.bookRatingService = bookRatingService;
         this.objectMapper = objectMapper;
     }
 
@@ -55,6 +59,10 @@ public class BooksPageController {
         model.addAttribute("book", bookService.getBookBySlug(slug));
         model.addAttribute("tags", tags);
         model.addAttribute("authors", authors);
+        Map<Integer, Integer> ratings = bookEntity.getRatings().stream()
+                .collect(Collectors.toMap(bookRatingEntity -> (int) bookRatingEntity.getValue(), bookRatingEntity -> 1, Integer::sum));
+        model.addAttribute("ratings", ratings);
+        model.addAttribute("ratingsCount", ratings.values().stream().mapToInt(Integer::valueOf).sum());
         Map<String, Set<String>> cookies = Map.of();
         if (request.getCookies() != null) {
             cookies = Stream.of(request.getCookies())
@@ -131,6 +139,26 @@ public class BooksPageController {
         result.put("result", true);
         result.put("cartAmount", cookies.getOrDefault("CART", Set.of()).size());
         result.put("keptAmount", cookies.getOrDefault("KEPT", Set.of()).size());
+        return result;
+    }
+
+    @PostMapping("/rateBook")
+    @ResponseBody
+    public ObjectNode rateBook(@RequestParam Map<String, String> status) {
+        if (status.get("bookId") == null || status.get("value") == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        BookEntity bookEntity = bookService.getBookEntityBySlug(status.get("bookId"));
+        ObjectNode result = objectMapper.createObjectNode();
+        if (bookEntity == null) {
+            result.put("result", false);
+            result.put("error", "Книга не найдена");
+        }
+        else {
+            BookRatingEntity bookRatingEntity = new BookRatingEntity();
+            bookRatingEntity.setBook(bookEntity);
+            bookRatingEntity.setValue(Short.parseShort(status.get("value")));
+            bookRatingService.addRating(bookRatingEntity);
+            result.put("result", true);
+        }
         return result;
     }
 

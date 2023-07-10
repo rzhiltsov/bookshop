@@ -1,6 +1,7 @@
 package com.example.MyBookShopApp.entities.book;
 
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
+import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
 import com.example.MyBookShopApp.entities.tag.TagEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
@@ -30,9 +31,6 @@ public class BookEntity {
     private short isBestseller;
 
     @Column(columnDefinition = "REAL NOT NULL DEFAULT 0")
-    private double rating;
-
-    @Column(columnDefinition = "REAL NOT NULL DEFAULT 0")
     private double popularity;
 
     @Column(columnDefinition = "INT NOT NULL")
@@ -58,6 +56,9 @@ public class BookEntity {
 
     @ManyToMany(mappedBy = "books")
     private List<TagEntity> tags;
+
+    @OneToMany(mappedBy = "book")
+    private List<BookRatingEntity> ratings;
 
     public int getId() {
         return id;
@@ -97,14 +98,6 @@ public class BookEntity {
 
     public void setIsBestseller(short isBestseller) {
         this.isBestseller = isBestseller;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
     }
 
     public double getPopularity() {
@@ -177,5 +170,13 @@ public class BookEntity {
 
     public void setTags(List<TagEntity> tags) {
         this.tags = tags;
+    }
+
+    public List<BookRatingEntity> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<BookRatingEntity> ratings) {
+        this.ratings = ratings;
     }
 }

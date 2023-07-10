@@ -3,6 +3,7 @@ package com.example.MyBookShopApp.services;
 import com.example.MyBookShopApp.dto.Book;
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
 import com.example.MyBookShopApp.repositories.AuthorRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class BookService {
@@ -35,12 +37,12 @@ public class BookService {
         book.setImage(bookEntity.getImage());
         book.setPrice(bookEntity.getPrice());
         book.setSlug(bookEntity.getSlug());
-        book.setIsBestseller(bookEntity.getIsBestseller() == 1);
+        book.setBestseller(bookEntity.getIsBestseller() == 1);
         book.setTitle(bookEntity.getTitle());
         book.setDiscount(bookEntity.getDiscount());
+        book.setRating((int) Math.round(bookEntity.getRatings().stream().mapToInt(BookRatingEntity::getValue).average().orElse(0)));
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
-        book.setPubDate(bookEntity.getPubDate());
         List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);
@@ -48,8 +50,8 @@ public class BookService {
     }
 
     public List<Book> getRecommendedBooks(int offset, int limit) {
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("rating", "id").descending());
-        return bookRepository.findAll(pageRequest).stream().map(this::createBook).toList();
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        return bookRepository.findBookEntitiesOrderByRating(pageRequest).stream().map(this::createBook).toList();
     }
 
     public List<Book> getRecentBooks(int offset, int limit) {
@@ -59,7 +61,7 @@ public class BookService {
     public List<Book> getRecentBooks(String from, String to, int offset, int limit) {
         from = from == null || from.isEmpty() ? "-infinity" : from;
         to = to == null || to.isEmpty() ? "infinity" : to;
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("pubDate", "id").descending());
+        PageRequest pageRequest = PageRequest.of(offset, limit);
         return bookRepository.findBookEntitiesByPubDate(from, to, pageRequest).stream().map(this::createBook).toList();
     }
 
