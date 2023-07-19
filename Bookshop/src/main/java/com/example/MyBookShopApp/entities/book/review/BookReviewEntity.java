@@ -5,6 +5,7 @@ import com.example.MyBookShopApp.entities.user.UserEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "book_review")
@@ -19,7 +20,7 @@ public class BookReviewEntity {
     private BookEntity book;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", columnDefinition = "INT NOT NULL")
+    @JoinColumn(name = "user_id", columnDefinition = "INT")
     private UserEntity user;
 
     @Column(columnDefinition = "TIMESTAMP NOT NULL")
@@ -27,6 +28,9 @@ public class BookReviewEntity {
 
     @Column(columnDefinition = "TEXT NOT NULL")
     private String text;
+
+    @OneToMany(mappedBy = "review")
+    private List<BookReviewLikeEntity> reviewLikes;
 
     public int getId() {
         return id;
@@ -66,5 +70,13 @@ public class BookReviewEntity {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public List<BookReviewLikeEntity> getReviewLikes() {
+        return reviewLikes;
+    }
+
+    public void setReviewLikes(List<BookReviewLikeEntity> reviewLikes) {
+        this.reviewLikes = reviewLikes;
     }
 }

@@ -15,7 +15,7 @@ public class BookRatingService {
         this.bookRatingRepository = bookRatingRepository;
     }
 
-    public BookRatingEntity addRating(BookRatingEntity bookRatingEntity) {
-        return bookRatingRepository.save(bookRatingEntity);
+    public void addRating(BookRatingEntity bookRatingEntity) {
+        bookRatingRepository.save(bookRatingEntity);
     }
 }

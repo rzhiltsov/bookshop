@@ -2,6 +2,7 @@ package com.example.MyBookShopApp.entities.book;
 
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
+import com.example.MyBookShopApp.entities.book.review.BookReviewEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
 import com.example.MyBookShopApp.entities.tag.TagEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
@@ -59,6 +60,9 @@ public class BookEntity {
 
     @OneToMany(mappedBy = "book")
     private List<BookRatingEntity> ratings;
+
+    @OneToMany(mappedBy = "book")
+    private List<BookReviewEntity> reviews;
 
     public int getId() {
         return id;
@@ -178,5 +182,13 @@ public class BookEntity {
 
     public void setRatings(List<BookRatingEntity> ratings) {
         this.ratings = ratings;
+    }
+
+    public List<BookReviewEntity> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<BookReviewEntity> reviews) {
+        this.reviews = reviews;
     }
 }

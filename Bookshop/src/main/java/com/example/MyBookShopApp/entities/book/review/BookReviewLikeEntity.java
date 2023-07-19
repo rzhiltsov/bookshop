@@ -18,7 +18,7 @@ public class BookReviewLikeEntity {
     private BookReviewEntity review;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", columnDefinition = "INT NOT NULL")
+    @JoinColumn(name = "user_id", columnDefinition = "INT")
     private UserEntity user;
 
     @Column(columnDefinition = "TIMESTAMP NOT NULL")
