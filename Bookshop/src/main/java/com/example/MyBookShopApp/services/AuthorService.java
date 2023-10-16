@@ -35,25 +35,24 @@ public class AuthorService {
             description.add("");
             return description;
         }
-        String[] words = authorEntity.getDescription().split("\\s");
         int charLimit = 160;
-        if (authorEntity.getDescription().length() <= charLimit) {
+        String[] words = authorEntity.getDescription().split("\\s");
+        if (authorEntity.getDescription().length() <= charLimit || words.length == 1) {
             description.add(authorEntity.getDescription());
             description.add("");
             return description;
         }
-        String openedText = "";
+        String shownText = "";
         String hiddenText = "";
         for (int i = 1; i <= words.length; i++) {
             String text = Arrays.stream(words).limit(i).collect(Collectors.joining(" "));
-            if (text.length() <= charLimit) {
-                openedText = text;
-            } else {
+            if (text.length() > charLimit) {
+                shownText = Arrays.stream(words).limit(i - 1).collect(Collectors.joining(" "));
                 hiddenText = Arrays.stream(words).skip(i - 1).collect(Collectors.joining(" "));
                 break;
             }
         }
-        description.add(openedText);
+        description.add(shownText);
         description.add(hiddenText);
         return description;
     }

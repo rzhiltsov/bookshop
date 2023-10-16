@@ -13,8 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -30,7 +32,7 @@ public class BookService {
         this.genreRepository = genreRepository;
     }
 
-    private Book createBook(BookEntity bookEntity) {
+    public Book createBook(BookEntity bookEntity) {
         if (bookEntity == null) return null;
         Book book = new Book();
         book.setDescription(bookEntity.getDescription());
@@ -92,11 +94,23 @@ public class BookService {
         return bookRepository.findBookEntitiesByAuthorSlug(slug, pageRequest).stream().map(this::createBook).toList();
     }
 
-    public Book getBookBySlug(String slug) {
-        return createBook(bookRepository.findBookEntityBySlug(slug));
-    }
-
     public BookEntity getBookEntityBySlug(String slug) {
         return bookRepository.findBookEntityBySlug(slug);
     }
+
+    public String getBookInfo(BookEntity bookEntity) {
+        String authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId()).stream().map(AuthorEntity::getName).collect(Collectors.joining(", "));
+        return "title: " + bookEntity.getTitle() + "\n" +
+                "authors: " + authors + "\n" +
+                "description: " + bookEntity.getDescription() + "\n" +
+                "rating: " + bookEntity.getRatings().stream().mapToInt(BookRatingEntity::getValue).average().orElse(0) + "\n" +
+                "image: " + bookEntity.getImage() + "\n" +
+                "slug: " + bookEntity.getSlug() + "\n" +
+                "publication date: " + bookEntity.getPubDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
+                "price: " + bookEntity.getPrice() + " рублей" + "\n" +
+                "discount: " + bookEntity.getDiscount() + "%" + "\n" +
+                "discount price: " + Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100) + " рублей";
+    }
+
+
 }

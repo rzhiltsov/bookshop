@@ -1,5 +1,6 @@
 package com.example.MyBookShopApp.entities.book.file;
 
+import com.example.MyBookShopApp.entities.book.BookEntity;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,14 +11,19 @@ public class BookFileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String hash;
 
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String path;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int typeId;
+    @ManyToOne
+    @JoinColumn(name = "type_id", columnDefinition = "INT NOT NULL")
+    private BookFileTypeEntity type;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id", columnDefinition = "INT NOT NULL")
+    private BookEntity book;
 
     public int getId() {
         return id;
@@ -43,11 +49,19 @@ public class BookFileEntity {
         this.path = path;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public BookFileTypeEntity getType() {
+        return type;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setType(BookFileTypeEntity type) {
+        this.type = type;
+    }
+
+    public BookEntity getBook() {
+        return book;
+    }
+
+    public void setBook(BookEntity book) {
+        this.book = book;
     }
 }

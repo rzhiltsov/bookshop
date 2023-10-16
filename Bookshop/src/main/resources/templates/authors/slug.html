@@ -58,23 +58,22 @@ p.error-browser
                 <div class="sdf">
                 </div>
                 <div class="Spoiler">
-                    <div class="Spoiler-visible">
-                        <div class="pict pict_left"><img alt="card.jpg" src="/assets/img/content/main/card.jpg" th:src="${author.photo}"/>
-                        </div>
-                        <div>
-                            <h2>Биография</h2>
-                            <p>
-                                <span th:text="${shownText}">Борис Бедный родился в семье учителя в 1916 году в станице Ярославская Краснодарского
+                    <div class="pict pict_left">
+                        <img alt="card.jpg" src="/assets/img/content/main/card.jpg" th:src="${author.photo}"/>
+                    </div>
+                    <div>
+                        <h2>Биография</h2>
+                        <div style="word-break: break-word;">
+                            <span class="Spoiler-visible" th:text="${shownText}">Борис Бедный родился в семье учителя в 1916 году в станице Ярославская Краснодарского
                                     края. Окончил Майкопский лесной техникум и был послан учиться в Ленинградскую
                                     лесотехническую академию. Стал специалистом по сплаву леса и приехал в Республику Коми,
                                     работать на сплавных предприятиях.</span>
-                                <span class="Spoiler-hide" th:text="' ' + ${hiddenText}"> Писать он начал до войны, в академии,- рассказал о нем в предисловии к книге "Первое дело"
+                            <span class="Spoiler-hide" th:text="${hiddenText}"> Писать он начал до войны, в академии,- рассказал о нем в предисловии к книге "Первое дело"
                                     поэт К.Ваншенкин.- Был участником литературных кружков и студий. Но всерьез вернулся к этому
                                     в сорок шестом, в далекой сплавконторе, на Трехозерной запани. Печатался в Коми
                                     республиканской газете "За новый Север" ("Красное знамя") и наконец решился вновь переломить
                                     судьбу, поступив в Литературный институт" в 1952г.</span>
-                            </p>
-                        </div>
+                        <div>
                     </div>
                     <div class="Spoiler-footer" th:style="${hiddenText.isEmpty() ? 'display: none;' : ''}">
                         <button class="Spoiler-trigger btn btn_primary btn_nr" data-hidetext="Показать полностью" data-showtext="Свернуть"

@@ -3,6 +3,7 @@ package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.dto.BookReview;
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.file.BookFileEntity;
 import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.book.review.BookReviewEntity;
 import com.example.MyBookShopApp.entities.book.review.BookReviewLikeEntity;
@@ -14,14 +15,19 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URLConnection;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,18 +41,20 @@ public class BooksPageController {
     private final ObjectMapper objectMapper;
     private final BookReviewService bookReviewService;
     private final BookReviewLikeService bookReviewLikeService;
+    private final BookFileService bookFileService;
 
     @Autowired
-    public BooksPageController(BookService bookService, AuthorService authorService, BookRatingService bookRatingService, ObjectMapper objectMapper, BookReviewService bookReviewService, BookReviewLikeService bookReviewLikeService) {
+    public BooksPageController(BookService bookService, AuthorService authorService, BookRatingService bookRatingService, ObjectMapper objectMapper, BookReviewService bookReviewService, BookReviewLikeService bookReviewLikeService, BookFileService bookFileService) {
         this.bookService = bookService;
         this.authorService = authorService;
         this.bookRatingService = bookRatingService;
         this.objectMapper = objectMapper;
         this.bookReviewService = bookReviewService;
         this.bookReviewLikeService = bookReviewLikeService;
+        this.bookFileService = bookFileService;
     }
 
-    @GetMapping(value = "/books/{slug}")
+    @GetMapping("/books/{slug}")
     public String bookPage(@PathVariable String slug, Model model, HttpServletRequest request) {
         BookEntity bookEntity = bookService.getBookEntityBySlug(slug);
         if (bookEntity == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -62,7 +70,7 @@ public class BooksPageController {
             String separator = i < authors.length - 1 ? ", " : "";
             authors[i] = new String[]{authorEntities.get(i).getSlug(), authorEntities.get(i).getName(), separator};
         }
-        model.addAttribute("book", bookService.getBookBySlug(slug));
+        model.addAttribute("book", bookService.createBook(bookEntity));
         model.addAttribute("tags", tags);
         model.addAttribute("authors", authors);
         Map<Integer, Integer> ratings = bookEntity.getRatings().stream()
@@ -72,7 +80,11 @@ public class BooksPageController {
         Comparator<BookReview> reviewComparator = Comparator.comparing((BookReview bookReview) -> bookReview.getLikesCount() - bookReview.getDislikesCount())
                 .thenComparing(BookReview::getTime).reversed();
         List<BookReview> reviews = bookEntity.getReviews().stream().map(bookReviewService::createBookReview).sorted(reviewComparator).toList();
+        model.addAttribute("reviewsCountLabel", bookReviewService.getReviewsCountLabel(reviews.size()));
         model.addAttribute("reviews", reviews);
+        List<BookFileEntity> bookFileEntities = bookEntity.getFiles();
+        bookFileEntities.sort(Comparator.comparing(file -> file.getType().getId()));
+        model.addAttribute("files", bookFileEntities);
         Map<String, Set<String>> cookies = Map.of();
         if (request.getCookies() != null) {
             cookies = Stream.of(request.getCookies())
@@ -111,7 +123,7 @@ public class BooksPageController {
         return "books/slug";
     }
 
-    @PostMapping(value = "/changeBookStatus")
+    @PostMapping("/changeBookStatus")
     @ResponseBody
     public ObjectNode changeBookStatus(@RequestParam Map<String, String> status, HttpServletRequest request, HttpServletResponse response) {
         if (status.get("status") == null || status.get("booksIds") == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -225,6 +237,19 @@ public class BooksPageController {
             result.put("result", true);
         }
         return result;
+    }
+
+    @GetMapping("/download/{hash}")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> downloadBook(@PathVariable String hash) {
+        BookFileEntity bookFileEntity = bookFileService.getBookFileByHash(hash);
+        if (bookFileEntity == null) return ResponseEntity.notFound().build();
+        String fileName = bookFileEntity.getBook().getTitle() + "." + bookFileEntity.getType().getName();
+        String mimeType = URLConnection.guessContentTypeFromName(fileName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
+                .contentType(mimeType != null ? MediaType.parseMediaType(mimeType) : MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(bookService.getBookInfo(bookFileEntity.getBook()).getBytes()));
     }
 
     @ExceptionHandler(ResponseStatusException.class)

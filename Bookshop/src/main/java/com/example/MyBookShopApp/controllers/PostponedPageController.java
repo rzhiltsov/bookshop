@@ -40,7 +40,7 @@ public class PostponedPageController {
         }
         Map<Book, String[][]> books = cookies.getOrDefault("KEPT", Set.of()).stream()
                 .map(bookService::getBookEntityBySlug).filter(Objects::nonNull)
-                .collect(Collectors.toMap(bookEntity -> bookService.getBookBySlug(bookEntity.getSlug()), bookEntity -> {
+                .collect(Collectors.toMap(bookService::createBook, bookEntity -> {
                     List<AuthorEntity> authorEntities = authorService.getAuthorsByBookIdOrdered(bookEntity.getId());
                     String[][] authors = new String[authorEntities.size()][3];
                     for (int i = 0; i < authors.length; i++) {

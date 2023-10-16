@@ -24,7 +24,7 @@ public class SearchService {
         this.authorRepository = authorRepository;
     }
 
-    private Book createBook(BookEntity bookEntity) {
+    public Book createBook(BookEntity bookEntity) {
         if (bookEntity == null) return null;
         Book book = new Book();
         book.setDescription(bookEntity.getDescription());
@@ -47,11 +47,10 @@ public class SearchService {
         return bookRepository.findBookEntitiesByPattern(query, pageRequest).stream().map(this::createBook).toList();
     }
 
-    public String getResultLabel(String query) {
-        if (query == null) {
+    public String getResultLabel(int booksCount) {
+        if (booksCount == -1) {
             return "Поисковый запрос не задан";
         }
-        int booksCount = bookRepository.findBookEntitiesByPattern(query, Pageable.unpaged()).size();
         if (booksCount == 0) {
             return "По вашему запросу книги не найдены";
         } else if (booksCount % 10 == 1 && booksCount % 100 != 11) {

@@ -48,17 +48,18 @@ public class SearchPageController {
     @GetMapping({"/searchPage/", "/searchPage/{query}"})
     public String searchPage(@PathVariable(required = false) String query, Model model) {
         model.addAttribute("query", query);
-        model.addAttribute("foundBooks", searchService.getFoundBooks(query, 0, 20));
-        model.addAttribute("resultLabel", searchService.getResultLabel(query));
+        List<Book> books = query == null ? List.of() : searchService.getFoundBooks(query, 0, 20);
+        model.addAttribute("foundBooks", books);
+        model.addAttribute("resultLabel", searchService.getResultLabel(query == null ? -1 : books.size()));
         return "/search/index";
     }
 
     @GetMapping({"/search/", "/search/{query}"})
     @ResponseBody
-    public ObjectNode loadFoundBooks(@PathVariable(required = false) String query, @PathVariable(required = false) @RequestParam int offset, @RequestParam int limit) {
+    public ObjectNode loadFoundBooks(@PathVariable(required = false) String query, @RequestParam int offset, @RequestParam int limit) {
         ObjectNode data = objectMapper.createObjectNode();
         List<Book> resultList = searchService.getFoundBooks(query, offset, limit);
-        data.put("count", resultList.size());
+        data.put("count", query == null ? -1 : resultList.size());
         ArrayNode books = data.putArray("books");
         resultList.forEach(books::addPOJO);
         return data;
