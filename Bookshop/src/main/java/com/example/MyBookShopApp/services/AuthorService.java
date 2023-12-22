@@ -5,7 +5,6 @@ import com.example.MyBookShopApp.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,25 +34,18 @@ public class AuthorService {
             description.add("");
             return description;
         }
-        int charLimit = 160;
-        String[] words = authorEntity.getDescription().split("\\s");
-        if (authorEntity.getDescription().length() <= charLimit || words.length == 1) {
+        int charLimit = 250;
+        int splitIndex = authorEntity.getDescription().lastIndexOf(" ", charLimit);
+        if (authorEntity.getDescription().length() <= charLimit) {
             description.add(authorEntity.getDescription());
             description.add("");
-            return description;
+        } else if (splitIndex == -1) {
+            description.add(authorEntity.getDescription().substring(0, charLimit));
+            description.add(authorEntity.getDescription().substring(charLimit));
+        } else {
+            description.add(authorEntity.getDescription().substring(0, splitIndex + 1));
+            description.add(authorEntity.getDescription().substring(splitIndex + 1));
         }
-        String shownText = "";
-        String hiddenText = "";
-        for (int i = 1; i <= words.length; i++) {
-            String text = Arrays.stream(words).limit(i).collect(Collectors.joining(" "));
-            if (text.length() > charLimit) {
-                shownText = Arrays.stream(words).limit(i - 1).collect(Collectors.joining(" "));
-                hiddenText = Arrays.stream(words).skip(i - 1).collect(Collectors.joining(" "));
-                break;
-            }
-        }
-        description.add(shownText);
-        description.add(hiddenText);
         return description;
     }
 

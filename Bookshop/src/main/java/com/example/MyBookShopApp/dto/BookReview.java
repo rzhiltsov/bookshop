@@ -14,11 +14,13 @@ public class BookReview {
 
     private int dislikesCount;
 
-    private String userRating;
-
     private String userName;
 
     private LocalDateTime time;
+
+    private boolean liked;
+
+    private boolean disliked;
 
     public int getId() {
         return id;
@@ -60,14 +62,6 @@ public class BookReview {
         this.dislikesCount = dislikesCount;
     }
 
-    public String getUserRating() {
-        return userRating;
-    }
-
-    public void setUserRating(String userRating) {
-        this.userRating = userRating;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -84,4 +78,19 @@ public class BookReview {
         this.time = time;
     }
 
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public boolean isDisliked() {
+        return disliked;
+    }
+
+    public void setDisliked(boolean disliked) {
+        this.disliked = disliked;
+    }
 }

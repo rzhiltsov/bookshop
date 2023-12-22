@@ -3,19 +3,22 @@ package com.example.MyBookShopApp.services;
 import com.example.MyBookShopApp.dto.Book;
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.links.Book2UserEntity;
 import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
-import com.example.MyBookShopApp.repositories.AuthorRepository;
-import com.example.MyBookShopApp.repositories.BookRepository;
-import com.example.MyBookShopApp.repositories.GenreRepository;
+import com.example.MyBookShopApp.entities.user.UserEntity;
+import com.example.MyBookShopApp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,27 +27,40 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final UserRepository userRepository;
+    private final Book2UserRepository book2UserRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository,
+                       UserRepository userRepository, Book2UserRepository book2UserRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
+        this.userRepository = userRepository;
+        this.book2UserRepository = book2UserRepository;
     }
 
     public Book createBook(BookEntity bookEntity) {
         if (bookEntity == null) return null;
         Book book = new Book();
+        book.setId(bookEntity.getId());
         book.setDescription(bookEntity.getDescription());
         book.setImage(bookEntity.getImage());
         book.setPrice(bookEntity.getPrice());
         book.setSlug(bookEntity.getSlug());
-        book.setBestseller(bookEntity.getIsBestseller() == 1);
+        book.setBestseller(bookEntity.isBestseller());
         book.setTitle(bookEntity.getTitle());
         book.setDiscount(bookEntity.getDiscount());
         book.setRating((int) Math.round(bookEntity.getRatings().stream().mapToInt(BookRatingEntity::getValue).average().orElse(0)));
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
+        book.setStatus("");
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            String userHash = SecurityContextHolder.getContext().getAuthentication().getName();
+            UserEntity userEntity = userRepository.findUserEntityByHash(userHash);
+            Book2UserEntity book2UserEntity = book2UserRepository.findBook2UserEntityByBookIdAndUserId(bookEntity.getId(), userEntity.getId());
+            book.setStatus(book2UserEntity != null ? book2UserEntity.getType().getName() : "");
+        }
         List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);
@@ -68,8 +84,8 @@ public class BookService {
     }
 
     public List<Book> getPopularBooks(int offset, int limit) {
-        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by("popularity", "id").descending());
-        return bookRepository.findAll(pageRequest).stream().map(this::createBook).toList();
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        return bookRepository.findBookEntitiesOrderByPopularity(pageRequest).stream().map(this::createBook).toList();
     }
 
     public List<Book> getBooksByTagSlug(String slug, int offset, int limit) {
@@ -96,6 +112,10 @@ public class BookService {
 
     public BookEntity getBookEntityBySlug(String slug) {
         return bookRepository.findBookEntityBySlug(slug);
+    }
+
+    public List<BookEntity> getBookEntitiesByIds(Iterable<Integer> bookIds) {
+        return bookRepository.findAllById(bookIds);
     }
 
     public String getBookInfo(BookEntity bookEntity) {

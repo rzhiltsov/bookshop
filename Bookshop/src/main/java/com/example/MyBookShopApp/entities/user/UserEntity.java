@@ -1,6 +1,9 @@
 package com.example.MyBookShopApp.entities.user;
 
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
+import com.example.MyBookShopApp.entities.book.review.BookReviewEntity;
+import com.example.MyBookShopApp.entities.book.review.BookReviewLikeEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +17,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String hash;
 
     @Column(columnDefinition = "TIMESTAMP NOT NULL")
@@ -23,8 +26,26 @@ public class UserEntity {
     @Column(columnDefinition = "INT NOT NULL DEFAULT 0")
     private int balance;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String name;
+
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String password;
+
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    private String role;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserContactEntity> contacts;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookRatingEntity> ratings;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookReviewLikeEntity> reviewLikes;
 
     @ManyToMany
     @JoinTable(name = "book2user",
@@ -70,6 +91,54 @@ public class UserEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public List<UserContactEntity> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<UserContactEntity> contacts) {
+        this.contacts = contacts;
+    }
+
+    public List<BookRatingEntity> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<BookRatingEntity> ratings) {
+        this.ratings = ratings;
+    }
+
+    public List<BookReviewEntity> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<BookReviewEntity> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<BookReviewLikeEntity> getReviewLikes() {
+        return reviewLikes;
+    }
+
+    public void setReviewLikes(List<BookReviewLikeEntity> reviewLikes) {
+        this.reviewLikes = reviewLikes;
     }
 
     public List<BookEntity> getBooks() {

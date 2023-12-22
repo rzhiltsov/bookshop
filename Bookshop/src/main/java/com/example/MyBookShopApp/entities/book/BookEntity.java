@@ -29,11 +29,8 @@ public class BookEntity {
     @Column(columnDefinition = "VARCHAR(255)")
     private String image;
 
-    @Column(columnDefinition = "SMALLINT NOT NULL")
-    private short isBestseller;
-
-    @Column(columnDefinition = "REAL NOT NULL DEFAULT 0")
-    private double popularity;
+    @Column(columnDefinition = "BOOLEAN NOT NULL")
+    private boolean bestseller;
 
     @Column(columnDefinition = "INT NOT NULL")
     private int price;
@@ -100,20 +97,12 @@ public class BookEntity {
         this.image = image;
     }
 
-    public short getIsBestseller() {
-        return isBestseller;
+    public boolean isBestseller() {
+        return bestseller;
     }
 
-    public void setIsBestseller(short isBestseller) {
-        this.isBestseller = isBestseller;
-    }
-
-    public double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
+    public void setBestseller(boolean bestseller) {
+        this.bestseller = bestseller;
     }
 
     public int getPrice() {

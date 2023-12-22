@@ -9,16 +9,17 @@
 <html class="ie9" lang="ru">
 <![endif]-->
 <!--[if gt IE 9]><!-->
-<html lang="ru"> <!--<![endif]-->
+<html th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
 <head>
     <title>Bookshop</title>
     <meta content="Описание страницы" name="description">
+
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport">
     <!--meta( http-equiv="cache-control" content="no-cache")-->
     <!--meta( http-equiv="expires" content="0")-->
     <!--link(rel="preload" href="assets/css/extra.min.css?v=" + version as="style" crossorigin="anonymous")-->
-    <link href="favicon.ico" rel="shortcut icon">
+    <link href="/favicon.ico" rel="shortcut icon">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-SemiBold.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
@@ -40,7 +41,7 @@ p.error-browser
         | браузера здесь&nbsp;
     | для правильного отображения сайта.
 -->
-<header th:replace="~{fragments/common_header_fragment :: header_fragment}"></header>
+<header th:replace="~{'fragments/common_header_fragment_' + ${authentication} :: header_fragment}"></header>
 <div class="Middle Middle_form">
     <div class="Middle-top">
         <div class="wrap">
@@ -50,11 +51,12 @@ p.error-browser
     </div>
     <div class="wrap">
         <main class="Middle-main">
-            <form action="#" class="form Login" method="post">
+            <form action="#" class="form Login" method="post" autocomplete="off">
                 <div class="Login-ins">
                     <div class="Login-step">
                         <div class="form-group">
-                            <label class="form-label Login-title">Введите e-mail или телефон
+                            <label class="form-label Login-title">
+                                <p>Введите e-mail или телефон</p>
                             </label>
                         </div>
                         <div class="form-group">
@@ -74,15 +76,19 @@ p.error-browser
                             </div>
                         </div>
                         <div class="form-group">
-                            <input class="form-input form-input_phone" data-mask="+7 (999) 999-99-99" data-validate="require" id="phone"
+                            <input class="form-input form-input_phone" data-mask="+7 (999) 999-99-99" data-validate="require phone" id="phone"
                                    name="phone" placeholder="Введите телефон"
                                    type="text"/>
-                            <input class="form-input form-input_mail" data-validate="mail require" id="mail" name="mail"
+                            <input class="form-input form-input_mail" data-validate="require mail" id="mail" name="mail"
                                    placeholder="Введите e-mail" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-input" data-validate="require" id="password" name="password" placeholder="Введите пароль"
+                                   type="password"/>
                         </div>
                         <div class="form-group form-group_center">
                             <button class="btn btn_primary form-btn" data-send="" data-type="phone" id="sendauth"
-                                    name="sendauth" type="button">Далее
+                                    name="sendauth" type="button">Войти
                             </button>
                         </div>
                     </div>
@@ -118,14 +124,14 @@ p.error-browser
                             </button>
                         </div>
                     </div>
-                    <div class="form-group form-group_center"><a class="Login-reg" href="/signup.html">Зарегистрироваться</a>
+                    <div class="form-group form-group_center"><a class="Login-reg" href="/signup">Зарегистрироваться</a>
                     </div>
                 </div>
             </form>
         </main>
     </div>
 </div>
-<footer th:replace="~{fragments/common_footer_fragment :: footer_fragment}"></footer>
+<footer th:replace="~{'fragments/common_footer_fragment_' + ${authentication} :: footer_fragment}"></footer>
 <script src="/assets/plg/jQuery/jquery-3.5.1.min.js"></script>
 </body>
 </html>

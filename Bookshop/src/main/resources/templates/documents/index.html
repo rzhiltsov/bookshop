@@ -9,7 +9,7 @@
 <html class="ie9" lang="ru">
 <![endif]-->
 <!--[if gt IE 9]><!-->
-<html lang="ru"> <!--<![endif]-->
+<html th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
 <head>
     <title>Bookshop</title>
     <meta content="Описание страницы" name="description">
@@ -18,7 +18,7 @@
     <!--meta( http-equiv="cache-control" content="no-cache")-->
     <!--meta( http-equiv="expires" content="0")-->
     <!--link(rel="preload" href="assets/css/extra.min.css?v=" + version as="style" crossorigin="anonymous")-->
-    <link href="favicon.ico" rel="shortcut icon">
+    <link href="/favicon.ico" rel="shortcut icon">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-SemiBold.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
@@ -40,7 +40,7 @@ p.error-browser
         | браузера здесь&nbsp;
     | для правильного отображения сайта.
 -->
-<header th:replace="~{fragments/common_header_fragment :: header_fragment}"></header>
+<header th:replace="~{'fragments/common_header_fragment_' + ${authentication} :: header_fragment}"></header>
 <div class="Middle">
     <div class="wrap">
         <main class="Middle-main">
@@ -48,43 +48,27 @@ p.error-browser
             </h1>
             <div class="Section">
                 <div class="Documents">
-                    <div class="Documents-wrap"><a class="Documents-item" href="/documents/slug.html">
+                    <div class="Documents-wrap">
+                        <a class="Documents-item" th:each="document : ${documents}" th:href="'/documents/' + ${document.slug}" href="/documents/slug.html" >
                         <div class="Documents-image"><img alt="1.jpg" src="/assets/img/content/documents/1.jpg"/>
                         </div>
                         <div class="Documents-content">
-                            <strong class="Documents-title">Публичная оферта
-                            </strong>
-                            <p>Согласно закону, публичная оферта – это предложение, которое, во-первых, адресовано
+                            <strong class="Documents-title" th:text="${document.title}">Публичная оферта</strong>
+                            <div style="word-break: break-word;" th:text="${document.text.substring(0, document.text.lastIndexOf('.', 1000) + 1)}">
+                                Согласно закону, публичная оферта – это предложение, которое, во-первых, адресовано
                                 неопределенному кругу лиц, во-вторых, содержит все существенные условия договора, и,
                                 в-третьих, достаточно определенно выражает намерение предприятия-оферента считать себя
                                 заключившим договор с любым
-                            </p>
-                            <p>Согласно закону, публичная оферта – это предложение, которое, во-первых, адресовано
-                                неопределенному кругу лиц, во-вторых, содержит все существенные условия договора, и,
-                                в-третьих, достаточно определенно выражает намерение предприятия-оферента считать себя
-                                заключившим договор с любым
-                            </p>
+                            </div>
                         </div>
-                    </a><a class="Documents-item" href="/documents/slug.html">
-                        <div class="Documents-image"><img alt="2.jpg" src="/assets/img/content/documents/2.jpg"/>
-                        </div>
-                        <div class="Documents-content">
-                            <strong class="Documents-title">Политика обработки персональных данных
-                            </strong>
-                            <p>Согласно закону, публичная оферта – это предложение, которое, во-первых, адресовано
-                                неопределенному кругу лиц, во-вторых, содержит все существенные условия договора, и,
-                                в-третьих, достаточно определенно выражает намерение предприятия-оферента считать себя
-                                заключившим договор с любым
-                            </p>
-                        </div>
-                    </a>
+                        </a>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 </div>
-<footer th:replace="~{fragments/common_footer_fragment :: footer_fragment}"></footer>
+<footer th:replace="~{'fragments/common_footer_fragment_' + ${authentication} :: footer_fragment}"></footer>
 <script src="/assets/plg/jQuery/jquery-3.5.1.min.js"></script>
 <!--+menu(
 'Это раз',

@@ -17,13 +17,13 @@ public class MessageEntity {
     private LocalDateTime time;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", columnDefinition = "INT NOT NULL")
+    @JoinColumn(name = "user_id", columnDefinition = "INT")
     private UserEntity user;
 
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String email;
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    private String mail;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String name;
 
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
@@ -56,12 +56,12 @@ public class MessageEntity {
         this.user = user;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getName() {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DefaultErrorController implements ErrorController {
 
     @GetMapping("/error")
-    public ResponseEntity<String> defaultErrorHandler(HttpServletRequest request) {
+    public ResponseEntity<Void> defaultErrorHandler(HttpServletRequest request) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         return ResponseEntity.status(Integer.parseInt(status.toString())).build();
     }

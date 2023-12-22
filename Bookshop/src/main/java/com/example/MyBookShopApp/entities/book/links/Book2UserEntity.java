@@ -15,8 +15,9 @@ public class Book2UserEntity {
     @Column(columnDefinition = "TIMESTAMP NOT NULL")
     private LocalDateTime time;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int typeId;
+    @ManyToOne
+    @JoinColumn(name = "type_id", columnDefinition = "INT NOT NULL")
+    private Book2UserTypeEntity type;
 
     @Column(name = "book_id", columnDefinition = "INT NOT NULL")
     private int bookId;
@@ -40,12 +41,12 @@ public class Book2UserEntity {
         this.time = time;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public Book2UserTypeEntity getType() {
+        return type;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setType(Book2UserTypeEntity type) {
+        this.type = type;
     }
 
     public int getBookId() {

@@ -1,8 +1,8 @@
 package com.example.MyBookShopApp.dto;
 
-import java.time.LocalDate;
-
 public class Book {
+
+    private int id;
 
     private String description;
 
@@ -23,6 +23,16 @@ public class Book {
     private String authors;
 
     private int rating;
+
+    private String status;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDescription() {
         return description;
@@ -102,5 +112,13 @@ public class Book {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

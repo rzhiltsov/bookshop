@@ -18,4 +18,8 @@ public class BookReviewLikeService {
     public void addReviewLike(BookReviewLikeEntity bookReviewLikeEntity) {
         bookReviewLikeRepository.save(bookReviewLikeEntity);
     }
+
+    public void deleteReviewLike(BookReviewLikeEntity bookReviewLikeEntity) {
+        bookReviewLikeRepository.delete(bookReviewLikeEntity);
+    }
 }

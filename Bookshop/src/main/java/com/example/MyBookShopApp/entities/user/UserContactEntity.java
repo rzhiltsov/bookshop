@@ -14,26 +14,26 @@ public class UserContactEntity {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", columnDefinition = "INT NOT NULL")
+    @JoinColumn(name = "user_id", columnDefinition = "INT")
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ContactType type;
 
-    @Column(columnDefinition = "SMALLINT NOT NULL")
-    private short approved;
+    @Column(columnDefinition = "BOOLEAN NOT NULL")
+    private boolean approved;
 
     @Column(columnDefinition = "VARCHAR(255)")
     private String code;
 
-    @Column(columnDefinition = "INT")
-    private int codeTrails;
+    @Column(columnDefinition = "SMALLINT NOT NULL DEFAULT 0")
+    private short codeTrails;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime codeTime;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String contact;
 
     public int getId() {
@@ -60,11 +60,11 @@ public class UserContactEntity {
         this.type = type;
     }
 
-    public short getApproved() {
+    public boolean isApproved() {
         return approved;
     }
 
-    public void setApproved(short approved) {
+    public void setApproved(boolean approved) {
         this.approved = approved;
     }
 
@@ -76,11 +76,11 @@ public class UserContactEntity {
         this.code = code;
     }
 
-    public int getCodeTrails() {
+    public short getCodeTrails() {
         return codeTrails;
     }
 
-    public void setCodeTrails(int codeTrails) {
+    public void setCodeTrails(short codeTrails) {
         this.codeTrails = codeTrails;
     }
 

@@ -21,7 +21,7 @@ public class FileDownloadEntity {
     @JoinColumn(name = "book_id", columnDefinition = "INT NOT NULL")
     private BookEntity book;
 
-    @Column(columnDefinition = "INT NOT NULL DEFAULT 1")
+    @Column(columnDefinition = "INT NOT NULL")
     private int count;
 
     public int getId() {

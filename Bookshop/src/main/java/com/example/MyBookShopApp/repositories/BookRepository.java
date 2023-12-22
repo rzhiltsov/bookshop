@@ -29,14 +29,20 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     List<BookEntity> findBookEntitiesByPattern(String pattern, Pageable pageable);
 
     @Query("SELECT books FROM TagEntity WHERE slug = ?1")
-    public List<BookEntity> findBookEntitiesByTagSlug(String slug, Pageable pageable);
+    List<BookEntity> findBookEntitiesByTagSlug(String slug, Pageable pageable);
 
     @Query("SELECT books FROM AuthorEntity WHERE slug = ?1")
-    public List<BookEntity> findBookEntitiesByAuthorSlug(String slug, Pageable pageable);
+    List<BookEntity> findBookEntitiesByAuthorSlug(String slug, Pageable pageable);
 
-    public BookEntity findBookEntityBySlug(String slug);
+    BookEntity findBookEntityBySlug(String slug);
 
-    @Query("FROM BookEntity b JOIN BookRatingEntity r ON b.id = r.book.id " +
-            "GROUP BY b.id ORDER BY AVG(r.value) DESC, b.id")
-    public List<BookEntity> findBookEntitiesOrderByRating(Pageable pageable);
+    @Query("FROM BookEntity b LEFT JOIN BookRatingEntity r ON b = r.book GROUP BY b.id ORDER BY AVG(COALESCE(r.value, 0)) DESC, b.id")
+    List<BookEntity> findBookEntitiesOrderByRating(Pageable pageable);
+
+    @Query("FROM BookEntity b LEFT JOIN Book2UserEntity bu ON b.id = bu.bookId " +
+            "LEFT JOIN Book2UserTypeEntity but ON bu.type = but " +
+            "GROUP BY b.id ORDER BY SUM(CASE WHEN but.name = 'PAID' OR but.name = 'ARCHIVED' THEN 1 " +
+            "WHEN (but.name = 'CART') THEN 0.7 WHEN (but.name = 'KEPT') THEN 0.4 ELSE 0 END) DESC, b.id")
+    List<BookEntity> findBookEntitiesOrderByPopularity(Pageable pageable);
+
 }

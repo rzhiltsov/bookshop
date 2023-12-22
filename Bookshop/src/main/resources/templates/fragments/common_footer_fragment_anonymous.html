@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Bookshop</title>
@@ -16,7 +16,7 @@
                     laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
                 </p>
                 <ul class="menu menu_img menu_smallImg Footer-menuSoc">
-                    <li class="menu-item"><a class="menu-link" href="#">
+                    <li class="menu-item"><a class="menu-link">
                         <svg height="15" viewBox="0 0 14 15" width="14" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g opacity=".5">
@@ -27,7 +27,7 @@
                         </svg>
                     </a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="#">
+                    <li class="menu-item"><a class="menu-link">
                         <svg height="12" viewBox="0 0 18 12" width="18" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g opacity=".5">
@@ -38,7 +38,7 @@
                         </svg>
                     </a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="#">
+                    <li class="menu-item"><a class="menu-link">
                         <svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g opacity=".5">
@@ -49,7 +49,7 @@
                         </svg>
                     </a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="#">
+                    <li class="menu-item"><a class="menu-link">
                         <svg height="17" viewBox="0 0 14 17" width="14" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g opacity=".5">
@@ -60,7 +60,7 @@
                         </svg>
                     </a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="#">
+                    <li class="menu-item"><a class="menu-link">
                         <svg height="12" viewBox="0 0 16 12" width="16" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g opacity=".5">
@@ -79,8 +79,7 @@
                     </li>
                     <li class="menu-item"><a class="menu-link" href="/genres" th:text="#{header.genres}">Жанры</a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="/books/recentPage"
-                                             th:text="#{header.recent}">Новинки</a>
+                    <li class="menu-item"><a class="menu-link" href="/books/recentPage" th:text="#{header.recent}">Новинки</a>
                     </li>
                     <li class="menu-item"><a class="menu-link" href="/books/popularPage" th:text="#{header.popular}">Популярное</a>
                     </li>
@@ -90,10 +89,9 @@
             </div>
             <div class="row-block">
                 <ul class="menu menu_vt Footer-menu">
-                    <li class="menu-item"><a class="menu-link" href="/signin" th:text="#{footer.signIn}">Войти</a>
+                    <li class="menu-item"><a class="menu-link" href="/signin" th:text="#{footer.signin}">Войти</a>
                     </li>
-                    <li class="menu-item"><a class="menu-link" href="/documents"
-                                             th:text="#{footer.documents}">Документы</a>
+                    <li class="menu-item"><a class="menu-link" href="/documents" th:text="#{footer.documents}">Документы</a>
                     </li>
                     <li class="menu-item"><a class="menu-link" href="/about" th:text="#{footer.about}">О компании</a>
                     </li>
@@ -104,9 +102,8 @@
                     <li class="menu-item">
                         <span th:text="#{footer.langChoice}">Выбор языка</span>
                         <select id="locales">
-                            <option value=" "></option>
-                            <option value="en">English</option>
                             <option value="ru">Русский</option>
+                            <option value="en">English</option>
                         </select>
                     </li>
                 </ul>
@@ -117,17 +114,6 @@
         <div class="wrap">© 2016 Bookshop Pty Ltd. ALL RIGHTS RESERVED
         </div>
     </div>
-    <script src="/assets/plg/jQuery/jquery-3.5.1.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#locales").change(function () {
-                const selectedOption = $('#locales').val();
-                if (selectedOption !== '') {
-                    window.location.replace('?lang=' + selectedOption);
-                }
-            });
-        });
-    </script>
 </footer>
 </body>
 </html>

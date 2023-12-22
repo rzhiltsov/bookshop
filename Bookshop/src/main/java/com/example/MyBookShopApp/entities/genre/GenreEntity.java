@@ -68,15 +68,15 @@ public class GenreEntity {
         return books;
     }
 
+    public void setBooks(List<BookEntity> books) {
+        this.books = books;
+    }
+
     public List<GenreEntity> getChildren() {
         return children;
     }
 
     public void setChildren(List<GenreEntity> children) {
         this.children = children;
-    }
-
-    public void setBooks(List<BookEntity> books) {
-        this.books = books;
     }
 }

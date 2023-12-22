@@ -20,7 +20,7 @@ public class BookReviewEntity {
     private BookEntity book;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", columnDefinition = "INT")
+    @JoinColumn(name = "user_id", columnDefinition = "INT NOT NULL")
     private UserEntity user;
 
     @Column(columnDefinition = "TIMESTAMP NOT NULL")

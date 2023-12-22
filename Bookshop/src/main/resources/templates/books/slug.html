@@ -9,7 +9,7 @@
 <html class="ie9" lang="ru">
 <![endif]-->
 <!--[if gt IE 9]><!-->
-<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
+<html th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
 <head>
     <title>Bookshop</title>
     <meta content="Описание страницы" name="description">
@@ -18,7 +18,7 @@
     <!--meta( http-equiv="cache-control" content="no-cache")-->
     <!--meta( http-equiv="expires" content="0")-->
     <!--link(rel="preload" href="assets/css/extra.min.css?v=" + version as="style" crossorigin="anonymous")-->
-    <link href="favicon.ico" rel="shortcut icon">
+    <link href="/favicon.ico" rel="shortcut icon">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-SemiBold.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Light.woff2" rel="preload">
     <link as="font" crossorigin="anonymous" href="/assets/fonts/Montserrat/Montserrat-Medium.woff2" rel="preload">
@@ -27,7 +27,6 @@
     <link href="/assets/css/basic.min.css?v=87821122" rel="stylesheet">
     <link href="/assets/css/jquery-ui.css" rel="stylesheet">
     <link href="/assets/css/extra.min.css?v=87821122" rel="stylesheet">
-    <link href="/assets/css/downloadBookWindow.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <script defer src="/assets/js/scripts.min.js?v=87821122"></script>
@@ -42,7 +41,7 @@ p.error-browser
         | браузера здесь&nbsp;
     | для правильного отображения сайта.
 -->
-<header th:replace="~{fragments/common_header_fragment :: header_fragment}"></header>
+<header th:replace="~{'fragments/common_header_fragment_' + ${authentication} :: header_fragment}"></header>
 <div class="Middle">
     <div class="wrap">
         <main class="Middle-main">
@@ -335,55 +334,7 @@ p.error-browser
                                 </button>
                             </div>
                             <div class="ProductCard-assessment">
-                                <span class="ProductCard-titleProp">Оцените книгу:</span>
-                                <span class="Rating Rating_input" data-bookid="2121" th:data-bookid="${book.slug}">
-                                    <span class="Rating-stars">
-                                        <span class="Rating-star">
-                        <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <g>
-                              <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                    fill="#ffc000"></path>
-                            </g>
-                          </g>
-                        </svg></span>
-                      <input name="rating" type="radio" value="1"/><span class="Rating-star">
-                        <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <g>
-                              <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                    fill="#ffc000"></path>
-                            </g>
-                          </g>
-                        </svg></span>
-                      <input name="rating" type="radio" value="2"/><span class="Rating-star">
-                        <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <g>
-                              <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                    fill="#ffc000"></path>
-                            </g>
-                          </g>
-                        </svg></span>
-                      <input name="rating" type="radio" value="3"/><span class="Rating-star">
-                        <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <g>
-                              <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                    fill="#ffc000"></path>
-                            </g>
-                          </g>
-                        </svg></span>
-                      <input name="rating" type="radio" value="4"/><span class="Rating-star">
-                        <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <g>
-                              <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                    fill="#ffc000"></path>
-                            </g>
-                          </g>
-                        </svg></span>
-                      <input name="rating" type="radio" value="5"/></span></span>
+                                <span class="ProductCard-titleProp">Войдите чтобы оценить книгу</span>
                             </div>
                             <div class="ProductCard-tags"><span class="ProductCard-titleProp">Тэги:</span>
                                 <span th:each="tag : ${tags}">
@@ -391,7 +342,7 @@ p.error-browser
                                 </span>
                             </div>
                             <div class="ProductCard-cost">
-                                <span class="ProductCard-titleProp">Цена:</span><span class="ProductCard-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽300</span><span class="ProductCard-price" th:text="'₽' + ${book.discountPrice}" >₽180</span>
+                                <span class="ProductCard-titleProp">Цена:</span><span class="ProductCard-priceOld" th:if="${book.discount != 0}" th:text="'₽' + ${book.price}">₽300</span><span class="ProductCard-price" th:text="'₽' + ${book.discountPrice}">₽180</span>
                             </div>
                             <!--+div.-info
                             &#32;
@@ -418,7 +369,7 @@ p.error-browser
                             <!--+div.-cartElement.-cartElement_amount-->
                             <!--    +Amount._product-->
                             <div class="ProductCard-cartElement">
-                                <button class="btn btn_primary btn_outline" data-alttext="Отложена" th:data-alttext="${keptAltText}"
+                                <button class="btn btn_primary btn_outline" th:class="${keptClass}" data-alttext="Отложена" th:data-alttext="${keptAltText}"
                                         data-bookid="[1111]" th:data-bookid="${book.slug}"
                                         data-btnradio="buyblock" data-btntype="check" data-check="false" th:data-check="${keptCheck}"
                                         data-sendstatus="KEPT"><span class="btn-icon"><img
@@ -436,31 +387,6 @@ p.error-browser
                                 </button>
                             </div>
                         </div>
-                        <div class="ProductCard-cart">
-                            <!--+div.-cartElement.-cartElement_amount-->
-                            <!--    +Amount._product-->
-                            <div class="ProductCard-cartElement"><a class="btn btn_primary btn_outline"><span
-                                    class="btn-icon"><img alt="download.svg"
-                                                          src="/assets/img/icons/download.svg"/></span><span
-                                    class="btn-content">Скачать</span></a>
-                            </div>
-                            <div class="ProductCard-cartElement">
-                                <button class="btn btn_primary btn_outline" data-alttext="Вернуть из архива"
-                                        data-bookid="[1111]" th:data-bookid="${book.slug}" data-btnradio="buyblock" data-btntype="check"
-                                        data-check="false" data-sendstatus="ARCHIVED"><span class="btn-icon"><img
-                                        alt="archive.svg" src="/assets/img/icons/archive.svg"/></span><span
-                                        class="btn-content">В архив</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="myPopup">
-                            <p>Ссылки для скачивания</p>
-                            <div th:each="file : ${files}">
-                                <a th:href="'/download/' + ${file.hash}" th:title="${file.type.description}" th:text="${file.type.name}"></a>
-                            </div>
-                            <span id="myPopup_close">&times;</span>
-                        </div>
-                        <div id="myOverlay"></div>
                         <!--+div.-cart-->
                         <!--    //+div.-cartElement.-cartElement_amount-->
                         <!--    //    +Amount._product-->
@@ -470,27 +396,11 @@ p.error-browser
                 </div>
                 <div class="Product-comments">
                     <div class="Product-comments-header">
-                        <h3 class="Product-comments-title">Отзывы
-                        </h3><span class="Product-comments-amount" th:text="${reviewsCountLabel}">567 отзывов</span>
+                        <h3 class="Product-comments-title">Отзывы</h3><span class="Product-comments-amount" th:text="${reviewsCountLabel}">567 отзывов</span>
                     </div>
                 </div>
                 <div class="Comments">
-                    <strong class="Comments-title">Написать отзыв</strong>
-                    <div class="Comments-addComment">
-                        <form action="#" class="form" data-bookid="1111" th:data-bookid="${book.slug}" method="post">
-                            <div class="form-group">
-                                <textarea class="form-textarea Comments-review" data-validate="require" id="review"
-                                          name="review" placeholder="Текст отзыва"></textarea>
-                            </div>
-                            <div class="form-group Comments-sendReview">
-                                <button class="btn btn_warning" type="submit">Отправить отзыв
-                                </button>
-                            </div>
-                            <div class="form-group">
-                                <div class="Comments-successSend"></div>
-                            </div>
-                        </form>
-                    </div>
+                    <strong class="Comments-title">Войдите чтобы оставить отзыв</strong>
                     <div class="Comment" th:each="review : ${reviews}">
                         <div class="Comment-column Comment-column_pict">
                             <div class="Comment-avatar">
@@ -499,54 +409,12 @@ p.error-browser
                         <div class="Comment-column">
                             <header class="Comment-header">
                                 <div>
-                                    <strong class="Comment-title"><span th:text="${review.userName}">Александр Кузнецов</span><span class="Comment-rating" th:text="${review.userRating}"><span
-                                            class="Rating Rating_comment"><span class="Rating-stars"><span
-                                            class="Rating-star Rating-star_view">
-                              <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                  <g>
-                                    <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                          fill="#ffc000"></path>
-                                  </g>
-                                </g>
-                              </svg></span><span class="Rating-star Rating-star_view">
-                              <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                  <g>
-                                    <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                          fill="#ffc000"></path>
-                                  </g>
-                                </g>
-                              </svg></span><span class="Rating-star">
-                              <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                  <g>
-                                    <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                          fill="#ffc000"></path>
-                                  </g>
-                                </g>
-                              </svg></span><span class="Rating-star">
-                              <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                  <g>
-                                    <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                          fill="#ffc000"></path>
-                                  </g>
-                                </g>
-                              </svg></span><span class="Rating-star">
-                              <svg height="18" viewBox="0 0 19 18" width="19" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                  <g>
-                                    <path d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"
-                                          fill="#ffc000"></path>
-                                  </g>
-                                </g>
-                              </svg></span></span></span></span>
-                                    </strong><span class="Comment-date" th:text="${#temporals.format(review.time, 'dd.MM.yyyy HH:mm')}">17.04.2020 16:40</span>
+                                    <strong class="Comment-title" th:text="${review.userName}">Александр Кузнецов</strong>
+                                    <span class="Comment-date" th:text="${#temporals.format(review.time, 'dd.MM.yyyy HH:mm')}">17.04.2020 16:40</span>
                                 </div>
                             </header>
                             <div class="Comment-content">
-                                <div class="Spoiler">
+                                <div class="Spoiler Spoiler_CLOSE">
                                     <div style="word-break: break-word;">
                                         <span class="Spoiler-visible" th:text="${review.shownText}">
                                                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit doli. Aenean commodo ligula
@@ -578,7 +446,6 @@ p.error-browser
                                                     <img alt="dislike.svg" src="/assets/img/icons/comment/dislike.svg"/></span><span
                                                     class="btn-content" th:text="${review.dislikesCount}">100</span>
                                             </button>
-                                            <span class="Rating-title_error"></span>
                                         </div>
                                         <button class="Spoiler-trigger btn btn_primary btn_nr" type="button"
                                                 th:style="${review.hiddenText.isEmpty() ? 'display: none;' : ''}"
@@ -595,9 +462,8 @@ p.error-browser
         </main>
     </div>
 </div>
-<footer th:replace="~{fragments/common_footer_fragment :: footer_fragment}"></footer>
+<footer th:replace="~{'fragments/common_footer_fragment_' + ${authentication} :: footer_fragment}"></footer>
 <script src="/assets/plg/jQuery/jquery-3.5.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="/assets/js/downloadBookWindow.js"></script>
 </body>
 </html>

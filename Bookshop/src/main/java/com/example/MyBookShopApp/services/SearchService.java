@@ -3,11 +3,16 @@ package com.example.MyBookShopApp.services;
 import com.example.MyBookShopApp.dto.Book;
 import com.example.MyBookShopApp.entities.author.AuthorEntity;
 import com.example.MyBookShopApp.entities.book.BookEntity;
+import com.example.MyBookShopApp.entities.book.links.Book2UserEntity;
+import com.example.MyBookShopApp.entities.user.UserEntity;
 import com.example.MyBookShopApp.repositories.AuthorRepository;
+import com.example.MyBookShopApp.repositories.Book2UserRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
+import com.example.MyBookShopApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,25 +22,36 @@ public class SearchService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final UserRepository userRepository;
+    private final Book2UserRepository book2UserRepository;
 
     @Autowired
-    public SearchService(BookRepository bookRepository, AuthorRepository authorRepository) {
+    public SearchService(BookRepository bookRepository, AuthorRepository authorRepository, UserRepository userRepository,
+                         Book2UserRepository book2UserRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
+        this.userRepository = userRepository;
+        this.book2UserRepository = book2UserRepository;
     }
 
     public Book createBook(BookEntity bookEntity) {
         if (bookEntity == null) return null;
         Book book = new Book();
-        book.setDescription(bookEntity.getDescription());
         book.setImage(bookEntity.getImage());
         book.setPrice(bookEntity.getPrice());
         book.setSlug(bookEntity.getSlug());
-        book.setBestseller(bookEntity.getIsBestseller() == 1);
+        book.setBestseller(bookEntity.isBestseller());
         book.setTitle(bookEntity.getTitle());
         book.setDiscount(bookEntity.getDiscount());
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
+        book.setStatus("");
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            String userHash = SecurityContextHolder.getContext().getAuthentication().getName();
+            UserEntity userEntity = userRepository.findUserEntityByHash(userHash);
+            Book2UserEntity book2UserEntity = book2UserRepository.findBook2UserEntityByBookIdAndUserId(bookEntity.getId(), userEntity.getId());
+            book.setStatus(book2UserEntity != null ? book2UserEntity.getType().getName() : "");
+        }
         List<AuthorEntity> authors = authorRepository.findAuthorEntitiesByBookIdOrdered(bookEntity.getId());
         String authorName = authors.size() == 1 ? authors.get(0).getName() : authors.get(0).getName() + " и др.";
         book.setAuthors(authorName);

@@ -13,7 +13,7 @@ public class DocumentEntity {
     @Column(columnDefinition = "INT NOT NULL  DEFAULT 0")
     private int sortIndex;
 
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
     private String slug;
 
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")

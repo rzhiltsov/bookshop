@@ -1,0 +1,10 @@
+insert into users (name, hash, reg_time, role, password) values('Magnus Ericsson', 'VP0M18VGNB', '2023-11-13 20:20:04.583837', 'ADMIN', '$2a$10$QYjOaIyUWn9ol9oMqxM5quMU5M11vffz78dWhfQfhYIZxpA.syGgm');
+insert into users (name, hash, reg_time, role) values ('Alon Roux', 'QLMOBXXVPR', '2017-11-06 00:29:52', 'USER');
+insert into users (name, hash, reg_time, role) values ('Margarette Kingswell', '0JOIJ1O18Q', '2010-01-19 09:06:11', 'USER');
+insert into users (name, hash, reg_time, role) values ('Agosto Handscomb', 'LUEYVN8TXG', '2009-05-23 18:55:39', 'USER');
+insert into users (name, hash, reg_time, role) values ('Cinnamon Scandwright', 'U3DV17E7C6', '2003-12-19 00:00:35', 'USER');
+insert into users (name, hash, reg_time, role) values ('Bonita Godsell', '3EJOGD2PCQ', '2014-03-07 05:57:39', 'USER');
+insert into users (name, hash, reg_time, role) values ('Yettie Puddin', 'JRLM9HDIAS', '2004-07-23 00:20:38', 'USER');
+insert into users (name, hash, reg_time, role) values ('Druci McElroy', '05XIG4B8NW', '2000-08-21 11:38:22', 'USER');
+insert into users (name, hash, reg_time, role) values ('Jessica Bewicke', 'CVBI6MRM4G', '2010-04-11 12:02:14', 'USER');
+insert into users (name, hash, reg_time, role) values ('Delphinia Pietrowski', 'N656ZNTOL6', '2009-05-08 18:31:50', 'USER');
