@@ -19,11 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,16 +44,14 @@ public class SignUpPageController {
     private final UserService userService;
     private final UserContactService userContactService;
     private final ObjectMapper objectMapper;
-    private final PasswordEncoder passwordEncoder;
     private final BookService bookService;
 
     @Autowired
     public SignUpPageController(UserService userService, UserContactService userContactService, ObjectMapper objectMapper,
-                                PasswordEncoder passwordEncoder, BookService bookService) {
+                                BookService bookService) {
         this.userService = userService;
         this.userContactService = userContactService;
         this.objectMapper = objectMapper;
-        this.passwordEncoder = passwordEncoder;
         this.bookService = bookService;
     }
 
@@ -73,7 +69,11 @@ public class SignUpPageController {
         if (contact.get("contact") == null || contact.get("type") == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        if (!contact.get("type").equals("phone") && !contact.get("type").equals("mail")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         ObjectNode result = objectMapper.createObjectNode();
+        LocalDateTime dateTime = LocalDateTime.now();
         UserContactEntity userContactEntity = userContactService.getUserContactEntityByContact(contact.get("contact"));
         if (userContactEntity != null) {
             if (userContactEntity.getUser() != null) {
@@ -84,14 +84,36 @@ public class SignUpPageController {
                 }
                 return result;
             }
+            if (userContactEntity.getCodeTime().plusMinutes(5).isBefore(dateTime)) {
+                userContactEntity.setCodeTrails((short) 0);
+            }
+            if (userContactEntity.getCodeTrails() == 3) {
+                result.put("result", false);
+                long interval = dateTime.until(userContactEntity.getCodeTime().plusMinutes(5), ChronoUnit.SECONDS);
+                result.put("error", "Слишком много попыток, попробуйте через " + interval + " сек");
+                return result;
+            }
         } else {
             userContactEntity = new UserContactEntity();
+            userContactEntity.setContact(contact.get("contact"));
             switch (contact.get("type")) {
                 case "phone" -> userContactEntity.setType(ContactType.PHONE);
                 case "mail" -> userContactEntity.setType(ContactType.MAIL);
             }
-            userContactEntity.setContact(contact.get("contact"));
         }
+        if (userContactEntity.getType() == ContactType.MAIL) {
+            String code = userContactService.generateConfirmationCode();
+            userContactEntity.setCode(code);
+            userContactEntity.setCodeTrails((short) (userContactEntity.getCodeTrails() + 1));
+            try {
+                userContactService.sendConfirmationCodeByMail(contact.get("contact"), code);
+            } catch (MailException e) {
+                result.put("result", false);
+                result.put("error", "Ошибка отправки письма");
+                return result;
+            }
+        }
+        userContactEntity.setCodeTime(dateTime);
         userContactService.addContactUserEntity(userContactEntity);
         result.put("result", true);
         return result;
@@ -100,11 +122,36 @@ public class SignUpPageController {
     @PostMapping("/approveContact")
     @ResponseBody
     public ObjectNode approveContact(@RequestParam Map<String, String> contact) {
-        if (contact.get("contact") == null && contact.get("code") == null) {
+        if (contact.get("contact") == null || contact.get("code") == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         ObjectNode result = objectMapper.createObjectNode();
+        LocalDateTime dateTime = LocalDateTime.now();
         UserContactEntity userContactEntity = userContactService.getUserContactEntityByContact(contact.get("contact"));
+        if (userContactEntity == null) {
+            result.put("result", false);
+            result.put("error", "Контакт не найден");
+            return result;
+        }
+        if (userContactEntity.getUser() != null) {
+            result.put("result", false);
+            result.put("error", "Такой контакт уже используется");
+            return result;
+        }
+        String code = contact.get("code").replaceAll("\\s", "");
+        if (userContactEntity.getType() == ContactType.MAIL) {
+            if (userContactEntity.getCodeTime().plusMinutes(10).isBefore(dateTime)) {
+                result.put("result", false);
+                result.put("error", "Код подтверждения истёк");
+                return result;
+            } else if (!code.equals(userContactEntity.getCode())) {
+                result.put("result", false);
+                result.put("error", "Неправильный код подтверждения");
+                return result;
+            } else {
+                userContactEntity.setCodeTrails((short) 0);
+            }
+        }
         userContactEntity.setApproved(true);
         userContactService.addContactUserEntity(userContactEntity);
         result.put("result", true);
@@ -113,12 +160,19 @@ public class SignUpPageController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestParam Map<String, String> user, HttpServletRequest request, HttpServletResponse response) {
-        if (user.get("name") == null || user.get("password") == null || user.get("phone") == null || user.get("mail") == null) {
+        if (user.get("name") == null || user.get("phone") == null || user.get("mail") == null) {
             return ResponseEntity.badRequest().build();
+        }
+        UserContactEntity phoneContact = userContactService.getUserContactEntityByContact(user.get("phone"));
+        if (phoneContact == null || !phoneContact.isApproved() || phoneContact.getUser() != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        UserContactEntity mailContact = userContactService.getUserContactEntityByContact(user.get("mail"));
+        if (mailContact == null || !mailContact.isApproved() || mailContact.getUser() != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(user.get("name"));
-        userEntity.setPassword(passwordEncoder.encode(user.get("password")));
         LocalDateTime dateTime = LocalDateTime.now();
         userEntity.setRegTime(dateTime);
         userEntity.setRole("USER");
@@ -126,10 +180,8 @@ public class SignUpPageController {
                 .map(s -> Integer.toHexString(s.hashCode())).collect(Collectors.joining());
         userEntity.setHash(userHash);
         List<UserContactEntity> userContactEntities = new ArrayList<>();
-        UserContactEntity phoneContact = userContactService.getUserContactEntityByContact(user.get("phone"));
         phoneContact.setUser(userEntity);
         userContactEntities.add(phoneContact);
-        UserContactEntity mailContact = userContactService.getUserContactEntityByContact(user.get("mail"));
         mailContact.setUser(userEntity);
         userContactEntities.add(mailContact);
         userEntity.setContacts(userContactEntities);
@@ -155,10 +207,9 @@ public class SignUpPageController {
         Cookie cookie = new Cookie("anonymous_token", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        UserDetails userDetails = userService.loadUserByUsername(user.get("mail"));
         Claims claims = new DefaultClaims();
-        claims.setSubject(userDetails.getUsername());
-        claims.put("authorities", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        claims.setSubject(userEntity.getHash());
+        claims.put("authorities", userService.getAuthorities(userEntity.getRole()));
         String token = userService.generateUserToken(claims);
         cookie = new Cookie("user_token", token);
         cookie.setHttpOnly(true);

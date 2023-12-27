@@ -1,4 +1,4 @@
-insert into users (name, hash, reg_time, role, password) values('Magnus Ericsson', 'VP0M18VGNB', '2023-11-13 20:20:04.583837', 'ADMIN', '$2a$10$QYjOaIyUWn9ol9oMqxM5quMU5M11vffz78dWhfQfhYIZxpA.syGgm');
+insert into users (name, hash, reg_time, role) values('Magnus Ericsson', 'VP0M18VGNB', '2023-11-13 20:20:04.583837', 'USER');
 insert into users (name, hash, reg_time, role) values ('Alon Roux', 'QLMOBXXVPR', '2017-11-06 00:29:52', 'USER');
 insert into users (name, hash, reg_time, role) values ('Margarette Kingswell', '0JOIJ1O18Q', '2010-01-19 09:06:11', 'USER');
 insert into users (name, hash, reg_time, role) values ('Agosto Handscomb', 'LUEYVN8TXG', '2009-05-23 18:55:39', 'USER');

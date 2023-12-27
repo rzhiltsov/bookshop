@@ -29,9 +29,6 @@ public class UserEntity {
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String name;
 
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String password;
-
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String role;
 
@@ -91,14 +88,6 @@ public class UserEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getRole() {

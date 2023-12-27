@@ -21,7 +21,7 @@ public class UserContactEntity {
     @Column(nullable = false)
     private ContactType type;
 
-    @Column(columnDefinition = "BOOLEAN NOT NULL")
+    @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
     private boolean approved;
 
     @Column(columnDefinition = "VARCHAR(255)")

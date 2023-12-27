@@ -3,8 +3,11 @@ package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.entities.book.BookEntity;
 import com.example.MyBookShopApp.entities.book.links.Book2UserEntity;
 import com.example.MyBookShopApp.entities.book.links.Book2UserTypeEntity;
+import com.example.MyBookShopApp.entities.enums.ContactType;
+import com.example.MyBookShopApp.entities.user.UserContactEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import com.example.MyBookShopApp.services.BookService;
+import com.example.MyBookShopApp.services.UserContactService;
 import com.example.MyBookShopApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,12 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,17 +38,17 @@ import java.util.Map;
 public class SignInPageController {
 
     private final ObjectMapper objectMapper;
-    private final AuthenticationProvider authenticationProvider;
     private final UserService userService;
     private final BookService bookService;
+    private final UserContactService userContactService;
 
     @Autowired
-    public SignInPageController(ObjectMapper objectMapper, AuthenticationProvider authenticationProvider, UserService userService,
-                                BookService bookService) {
+    public SignInPageController(ObjectMapper objectMapper, UserService userService,
+                                BookService bookService, UserContactService userContactService) {
         this.objectMapper = objectMapper;
-        this.authenticationProvider = authenticationProvider;
         this.userService = userService;
         this.bookService = bookService;
+        this.userContactService = userContactService;
     }
 
     @GetMapping("/signin")
@@ -68,53 +67,109 @@ public class SignInPageController {
 
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login_sendContact")
     @ResponseBody
-    public ObjectNode login(@RequestParam Map<String, String> user, HttpServletRequest request, HttpServletResponse response) {
-        if (user.get("contact") == null || user.get("password") == null) {
+    public ObjectNode sendContact(@RequestParam Map<String, String> user) {
+        if (user.get("contact") == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         ObjectNode result = objectMapper.createObjectNode();
-        try {
-            Authentication authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(user.get("contact"), user.get("password")));
-            UserEntity userEntity = userService.getUserEntityByHash(authentication.getName());
-            LocalDateTime dateTime = LocalDateTime.now();
-            Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
-            data.forEach((key, value) -> {
-                Book2UserTypeEntity status;
-                if (key.equals("CART")) status = userService.getBook2EntityTypeByName("CART");
-                else if (key.equals("KEPT")) status = userService.getBook2EntityTypeByName("KEPT");
-                else return;
-                value.forEach(slug -> {
-                    BookEntity bookEntity = bookService.getBookEntityBySlug(slug);
-                    if (bookEntity == null) return;
-                    Book2UserEntity book2UserEntity = userService.getBook2UserByBookIdAndUserId(bookEntity.getId(), userEntity.getId());
-                    if (book2UserEntity != null) return;
-                    book2UserEntity = new Book2UserEntity();
-                    book2UserEntity.setBookId(bookEntity.getId());
-                    book2UserEntity.setUserId(userEntity.getId());
-                    book2UserEntity.setType(status);
-                    book2UserEntity.setTime(dateTime);
-                    userService.addBook2User(book2UserEntity);
-                });
-            });
-            Cookie cookie = new Cookie("anonymous_token", null);
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-            Claims claims = new DefaultClaims();
-            claims.setSubject(authentication.getName());
-            claims.put("authorities", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-            String token = userService.generateUserToken(claims);
-            cookie = new Cookie("user_token", token);
-            cookie.setHttpOnly(true);
-            cookie.setAttribute("SameSite", "Lax");
-            cookie.setMaxAge((int) dateTime.until(dateTime.plusMonths(1), ChronoUnit.SECONDS));
-            response.addCookie(cookie);
-            result.put("result", true);
-        } catch (BadCredentialsException exception) {
+        LocalDateTime dateTime = LocalDateTime.now();
+        UserContactEntity userContactEntity = userContactService.getUserContactEntityByContact(user.get("contact"));
+        if (userContactEntity == null || userContactEntity.getUser() == null) {
             result.put("result", false);
-            result.put("error", "Неправильные логин или пароль");
+            result.put("error", "Пользователь не найден");
+            return result;
         }
+        if (userContactEntity.getCodeTime().plusMinutes(5).isBefore(dateTime)) {
+            userContactEntity.setCodeTrails((short) 0);
+        }
+        if (userContactEntity.getCodeTrails() == 3) {
+            result.put("result", false);
+            long interval = dateTime.until(userContactEntity.getCodeTime().plusMinutes(5), ChronoUnit.SECONDS);
+            result.put("error", "Слишком много попыток, попробуйте через " + interval + " сек");
+            return result;
+        }
+        if (userContactEntity.getType() == ContactType.MAIL) {
+            String code = userContactService.generateConfirmationCode();
+            userContactEntity.setCode(code);
+            userContactEntity.setCodeTrails((short) (userContactEntity.getCodeTrails() + 1));
+            try {
+                userContactService.sendConfirmationCodeByMail(user.get("contact"), code);
+            } catch (MailException e) {
+                result.put("result", false);
+                result.put("error", "Ошибка отправки письма");
+                return result;
+            }
+        }
+        userContactEntity.setCodeTime(dateTime);
+        userContactService.addContactUserEntity(userContactEntity);
+        result.put("result", true);
+        return result;
+    }
+
+    @PostMapping("/login_approveContact")
+    @ResponseBody
+    public ObjectNode approveContact(@RequestParam Map<String, String> user, HttpServletRequest request, HttpServletResponse response) {
+        if (user.get("contact") == null || user.get("code") == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        ObjectNode result = objectMapper.createObjectNode();
+        LocalDateTime dateTime = LocalDateTime.now();
+        UserContactEntity userContactEntity = userContactService.getUserContactEntityByContact(user.get("contact"));
+        if (userContactEntity == null || userContactEntity.getUser() == null) {
+            result.put("result", false);
+            result.put("error", "Пользователь не найден");
+            return result;
+        }
+        String code = user.get("code").replaceAll("\\s", "");
+        if (userContactEntity.getType() == ContactType.MAIL) {
+            if (userContactEntity.getCodeTime().plusMinutes(10).isBefore(dateTime)) {
+                result.put("result", false);
+                result.put("error", "Код подтверждения истёк");
+                return result;
+            } else if (!code.equals(userContactEntity.getCode())) {
+                result.put("result", false);
+                result.put("error", "Неправильный код подтверждения");
+                return result;
+            } else {
+                userContactEntity.setCodeTrails((short) 0);
+            }
+        }
+        userContactService.addContactUserEntity(userContactEntity);
+        UserEntity userEntity = userContactEntity.getUser();
+        Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
+        data.forEach((key, value) -> {
+            Book2UserTypeEntity status;
+            if (key.equals("CART")) status = userService.getBook2EntityTypeByName("CART");
+            else if (key.equals("KEPT")) status = userService.getBook2EntityTypeByName("KEPT");
+            else return;
+            value.forEach(slug -> {
+                BookEntity bookEntity = bookService.getBookEntityBySlug(slug);
+                if (bookEntity == null) return;
+                Book2UserEntity book2UserEntity = userService.getBook2UserByBookIdAndUserId(bookEntity.getId(), userEntity.getId());
+                if (book2UserEntity != null) return;
+                book2UserEntity = new Book2UserEntity();
+                book2UserEntity.setBookId(bookEntity.getId());
+                book2UserEntity.setUserId(userEntity.getId());
+                book2UserEntity.setType(status);
+                book2UserEntity.setTime(dateTime);
+                userService.addBook2User(book2UserEntity);
+            });
+        });
+        Cookie cookie = new Cookie("anonymous_token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        Claims claims = new DefaultClaims();
+        claims.setSubject(userEntity.getHash());
+        claims.put("authorities", userService.getAuthorities(userEntity.getRole()));
+        String token = userService.generateUserToken(claims);
+        cookie = new Cookie("user_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "Lax");
+        cookie.setMaxAge((int) dateTime.until(dateTime.plusMonths(1), ChronoUnit.SECONDS));
+        response.addCookie(cookie);
+        result.put("result", true);
         return result;
     }
 

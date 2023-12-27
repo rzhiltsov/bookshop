@@ -3,11 +3,9 @@ package com.example.MyBookShopApp.services;
 import com.example.MyBookShopApp.dto.User;
 import com.example.MyBookShopApp.entities.book.links.Book2UserEntity;
 import com.example.MyBookShopApp.entities.book.links.Book2UserTypeEntity;
-import com.example.MyBookShopApp.entities.user.UserContactEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import com.example.MyBookShopApp.repositories.Book2UserRepository;
 import com.example.MyBookShopApp.repositories.Book2UserTypeRepository;
-import com.example.MyBookShopApp.repositories.UserContactRepository;
 import com.example.MyBookShopApp.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -15,9 +13,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -25,22 +24,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final String jwtKey;
     private final UserRepository userRepository;
-    private final UserContactRepository userContactRepository;
     private final Book2UserRepository book2UserRepository;
     private final Book2UserTypeRepository book2UserTypeRepository;
+    private final RoleHierarchy roleHierarchy;
 
     @Autowired
-    public UserService(@Value("$(jwt.key)") String jwtKey, UserRepository userRepository, UserContactRepository userContactRepository,
-                       Book2UserRepository book2UserRepository, Book2UserTypeRepository book2UserTypeRepository) {
+    public UserService(@Value("$(jwt.key)") String jwtKey, UserRepository userRepository, Book2UserRepository book2UserRepository,
+                       Book2UserTypeRepository book2UserTypeRepository) {
         this.jwtKey = jwtKey;
         this.userRepository = userRepository;
-        this.userContactRepository = userContactRepository;
         this.book2UserRepository = book2UserRepository;
         this.book2UserTypeRepository = book2UserTypeRepository;
+        this.roleHierarchy = initRoleHierarchy();
+    }
+
+    private RoleHierarchy initRoleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        return roleHierarchy;
     }
 
     public User createUser(UserEntity userEntity) {
@@ -56,21 +61,6 @@ public class UserService implements UserDetailsService {
         user.setBalance(userEntity.getBalance());
         return user;
 
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String userContact) throws UsernameNotFoundException {
-        UserContactEntity userContactEntity = userContactRepository.findUserContactEntityByContact(userContact);
-        if (userContactEntity == null || userContactEntity.getUser() == null) {
-            throw new UsernameNotFoundException("Пользователь не найден.");
-        }
-        UserEntity userEntity = userContactEntity.getUser();
-        return org.springframework.security.core.userdetails.User
-                .builder()
-                .username(userEntity.getHash())
-                .password(userEntity.getPassword())
-                .roles(userEntity.getRole())
-                .build();
     }
 
     public void addUser(UserEntity userEntity) {
@@ -139,6 +129,11 @@ public class UserService implements UserDetailsService {
 
     public Book2UserTypeEntity getBook2EntityTypeByName(String name) {
         return book2UserTypeRepository.findBook2UserTypeEntityByName(name);
+    }
+
+    public List<String> getAuthorities(String role) {
+        return roleHierarchy.getReachableGrantedAuthorities(List.of(new SimpleGrantedAuthority("ROLE_" + role))).stream()
+                .map(GrantedAuthority::getAuthority).toList();
     }
 
 }
