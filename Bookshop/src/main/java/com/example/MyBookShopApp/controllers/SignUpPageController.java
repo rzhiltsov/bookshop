@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -101,10 +102,19 @@ public class SignUpPageController {
                 case "mail" -> userContactEntity.setType(ContactType.MAIL);
             }
         }
-        if (userContactEntity.getType() == ContactType.MAIL) {
-            String code = userContactService.generateConfirmationCode();
-            userContactEntity.setCode(code);
-            userContactEntity.setCodeTrails((short) (userContactEntity.getCodeTrails() + 1));
+        String code = userContactService.generateConfirmationCode();
+        userContactEntity.setCode(code);
+        userContactEntity.setCodeTrails((short) (userContactEntity.getCodeTrails() + 1));
+        userContactEntity.setCodeTime(dateTime);
+        if (userContactEntity.getType() == ContactType.PHONE) {
+            try {
+                userContactService.sendConfirmationCodeByPhone(contact.get("contact"), code);
+            } catch (RestClientException e) {
+                result.put("result", false);
+                result.put("error", "Ошибка отправки SMS");
+                return result;
+            }
+        } else if (userContactEntity.getType() == ContactType.MAIL) {
             try {
                 userContactService.sendConfirmationCodeByMail(contact.get("contact"), code);
             } catch (MailException e) {
@@ -113,7 +123,6 @@ public class SignUpPageController {
                 return result;
             }
         }
-        userContactEntity.setCodeTime(dateTime);
         userContactService.addContactUserEntity(userContactEntity);
         result.put("result", true);
         return result;
@@ -139,18 +148,16 @@ public class SignUpPageController {
             return result;
         }
         String code = contact.get("code").replaceAll("\\s", "");
-        if (userContactEntity.getType() == ContactType.MAIL) {
-            if (userContactEntity.getCodeTime().plusMinutes(10).isBefore(dateTime)) {
-                result.put("result", false);
-                result.put("error", "Код подтверждения истёк");
-                return result;
-            } else if (!code.equals(userContactEntity.getCode())) {
-                result.put("result", false);
-                result.put("error", "Неправильный код подтверждения");
-                return result;
-            } else {
-                userContactEntity.setCodeTrails((short) 0);
-            }
+        if (userContactEntity.getCodeTime().plusMinutes(10).isBefore(dateTime)) {
+            result.put("result", false);
+            result.put("error", "Код подтверждения истёк");
+            return result;
+        } else if (!code.equals(userContactEntity.getCode())) {
+            result.put("result", false);
+            result.put("error", "Неправильный код подтверждения");
+            return result;
+        } else {
+            userContactEntity.setCodeTrails((short) 0);
         }
         userContactEntity.setApproved(true);
         userContactService.addContactUserEntity(userContactEntity);
