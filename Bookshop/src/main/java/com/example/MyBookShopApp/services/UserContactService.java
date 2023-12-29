@@ -43,8 +43,12 @@ public class UserContactService {
         return userContactRepository.findUserContactEntityByContact(contact);
     }
 
-    public void addContactUserEntity(UserContactEntity userContactEntity) {
+    public void addUserContactEntity(UserContactEntity userContactEntity) {
         userContactRepository.save(userContactEntity);
+    }
+
+    public void deleteUserContactEntity(UserContactEntity userContactEntity) {
+        userContactRepository.delete(userContactEntity);
     }
 
     public String generateConfirmationCode() {

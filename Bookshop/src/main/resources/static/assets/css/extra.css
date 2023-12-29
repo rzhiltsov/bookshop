@@ -3379,7 +3379,7 @@
 
 .Profile-btn_confirm {
     margin-top: 25px;
-    display: none;
+    display: block;
 }
 
 .Profile-form {

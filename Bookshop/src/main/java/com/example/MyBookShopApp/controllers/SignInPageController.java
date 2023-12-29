@@ -57,15 +57,16 @@ public class SignInPageController {
         if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
             String host = request.getHeader("Host");
             String referer = request.getHeader("Referer");
+            Cookie cookie = new Cookie("loginReferer", referer);
             if (referer != null && referer.contains(host)) {
-                Cookie cookie = new Cookie("loginReferer", referer);
                 cookie.setMaxAge(3600);
-                response.addCookie(cookie);
+            } else {
+                cookie.setMaxAge(0);
             }
+            response.addCookie(cookie);
             return "signin";
         }
-        return "redirect:/my";
-
+        return "redirect:/profile";
     }
 
     @PostMapping("/login_sendContact")
@@ -112,7 +113,7 @@ public class SignInPageController {
                 return result;
             }
         }
-        userContactService.addContactUserEntity(userContactEntity);
+        userContactService.addUserContactEntity(userContactEntity);
         result.put("result", true);
         return result;
     }
@@ -143,7 +144,7 @@ public class SignInPageController {
         } else {
             userContactEntity.setCodeTrails((short) 0);
         }
-        userContactService.addContactUserEntity(userContactEntity);
+        userContactService.addUserContactEntity(userContactEntity);
         UserEntity userEntity = userContactEntity.getUser();
         Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
         data.forEach((key, value) -> {

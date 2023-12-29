@@ -8,6 +8,7 @@ import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.genre.GenreEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import com.example.MyBookShopApp.repositories.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,10 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,15 +27,17 @@ public class BookService {
     private final GenreRepository genreRepository;
     private final UserRepository userRepository;
     private final Book2UserRepository book2UserRepository;
+    private final HttpServletRequest request;
 
     @Autowired
     public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository,
-                       UserRepository userRepository, Book2UserRepository book2UserRepository) {
+                       UserRepository userRepository, Book2UserRepository book2UserRepository, HttpServletRequest request) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
         this.userRepository = userRepository;
         this.book2UserRepository = book2UserRepository;
+        this.request = request;
     }
 
     public Book createBook(BookEntity bookEntity) {
@@ -54,8 +54,16 @@ public class BookService {
         book.setRating((int) Math.round(bookEntity.getRatings().stream().mapToInt(BookRatingEntity::getValue).average().orElse(0)));
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
-        book.setStatus("");
-        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+            Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
+            if (data.getOrDefault("CART", List.of()).stream().anyMatch(bookEntity.getSlug()::equals)) {
+                book.setStatus("CART");
+            } else if (data.getOrDefault("KEPT", List.of()).stream().anyMatch(bookEntity.getSlug()::equals)) {
+                book.setStatus("KEPT");
+            } else {
+                book.setStatus("");
+            }
+        } else {
             String userHash = SecurityContextHolder.getContext().getAuthentication().getName();
             UserEntity userEntity = userRepository.findUserEntityByHash(userHash);
             Book2UserEntity book2UserEntity = book2UserRepository.findBook2UserEntityByBookIdAndUserId(bookEntity.getId(), userEntity.getId());

@@ -61,7 +61,7 @@ public class SignUpPageController {
         if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
             return "signup";
         }
-        return "redirect:/my";
+        return "redirect:/profile";
     }
 
     @PostMapping("/requestContactConfirmation")
@@ -123,7 +123,7 @@ public class SignUpPageController {
                 return result;
             }
         }
-        userContactService.addContactUserEntity(userContactEntity);
+        userContactService.addUserContactEntity(userContactEntity);
         result.put("result", true);
         return result;
     }
@@ -160,7 +160,7 @@ public class SignUpPageController {
             userContactEntity.setCodeTrails((short) 0);
         }
         userContactEntity.setApproved(true);
-        userContactService.addContactUserEntity(userContactEntity);
+        userContactService.addUserContactEntity(userContactEntity);
         result.put("result", true);
         return result;
     }

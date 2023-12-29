@@ -89,7 +89,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/download/*", "/my*/**", "/profile").hasRole("USER")
+                .requestMatchers("/download/*", "/my*/**", "/profile", "/editProfile").hasRole("USER")
                 .requestMatchers("/**").permitAll()
                 .and()
                 .formLogin().loginPage("/signin")

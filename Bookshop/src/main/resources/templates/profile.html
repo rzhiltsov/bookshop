@@ -65,57 +65,41 @@ p.error-browser
                 <div class="Tabs-wrap">
                     <div class="Tabs-block" id="basic">
                         <div class="Profile">
-                            <form action="#" class="form Profile-form" method="post">
+                            <form action="#" class="form Profile-form" method="post" autocomplete="off">
                                 <div class="row">
                                     <div class="row-block">
                                         <div class="form-group">
                                             <label class="form-label" for="name">Имя
                                             </label>
-                                            <input class="form-input" id="name" name="name" type="text" value="Михаил" th:value="${user != null ? user.name : ''}"/>
+                                            <input class="form-input" data-validate="require name" id="name" placeholder="Введите Имя" name="name" type="text" maxlength="30"
+                                                   value="Михаил" th:value="${user.name}"/>
+                                            <div class="Profile-btn Profile-btn_confirm">
+                                                <button class="btn btn_primary" id="changeName" disabled="disabled" type="button">Сохранить
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="mail">E-mail
                                             </label>
-                                            <input class="form-input" data-validate="require mail" id="mail" name="mail"
-                                                   type="text" value="addr@sait.com" th:value="${user != null ? user.mail : ''}"/>
+                                            <input class="form-input" data-validate="require mail"
+                                                   id="mail" name="mail" type="text" placeholder="Введите e-mail" value="addr@sait.com" th:value="${user.mail}"/>
+                                            <input class="form-input" data-mask="999 999" data-validate="key require" id="mailCode" name="mailcode"
+                                                   placeholder="Код из письма" type="text" style="display: none;"/>
                                             <div class="Profile-btn Profile-btn_confirm">
-                                                <button class="btn btn_primary" type="button">Подтвердить
+                                                <button class="btn btn_primary" id="changeMail" disabled="disabled" type="button">Подтвердить
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="phone">Телефон
                                             </label>
-                                            <input class="form-input" data-mask="+7 (999) 999-99-99" data-validate="require" id="phone"
-                                                   name="phone" type="text"
-                                                   value="+70000000000" th:value="${user != null ? user.phone : ''}"/>
+                                            <input class="form-input" data-mask="+7 (999) 999-99-99" data-validate="require phone"
+                                                   id="phone" name="phone" type="text" placeholder="Введите телефон" value="+70000000000" th:value="${user.phone}"/>
+                                            <input class="form-input" data-mask="999 999" data-validate="key require" id="phoneCode" name="phonecode"
+                                                   placeholder="Код из SMS" type="text" style="display: none;"/>
                                             <div class="Profile-btn Profile-btn_confirm">
-                                                <button class="btn btn_primary" type="button">Подтвердить
+                                                <button class="btn btn_primary" id="changePhone" disabled="disabled" type="button">Подтвердить
                                                 </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row-block">
-                                        <div class="form-group">
-                                            <label class="form-label" for="password">Пароль
-                                            </label>
-                                            <input class="form-input" id="password" name="password" placeholder="Тут можно изменить пароль"
-                                                   type="password"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="passwordReply">Подтверждение пароля
-                                            </label>
-                                            <input class="form-input" id="passwordReply" name="passwordReply"
-                                                   placeholder="Введите пароль повторно" type="password"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="Profile-btn">
-                                                <button class="btn btn_danger" type="button">Отменить
-                                                </button>
-                                                <button class="btn btn_primary" type="submit">Сохранить
-                                                </button>
-                                            </div>
-                                            <div class="Profile-success">Профиль успешно сохранен
                                             </div>
                                         </div>
                                     </div>
@@ -123,7 +107,7 @@ p.error-browser
                             </form>
                         </div>
                     </div>
-                    <div class="Tabs-block" id="transactions">
+                    <div class="Tabs-block" id="transactions" style="display: none;">
                         <div class="Transactions">
                             <div class="tableWrap">
                                 <table class="table table_noMargin">
@@ -187,7 +171,7 @@ p.error-browser
                             </div>
                         </div>
                     </div>
-                    <div class="Tabs-block" id="topup">
+                    <div class="Tabs-block" id="topup" style="display: none;">
                         <form action="#" class="form Topup" data-sendHash="34534535" method="post">
                             <div class="Topup-wrap">
                                 <strong class="Topup-title">Введите сумму, на которую хотите пополнить свой счет:

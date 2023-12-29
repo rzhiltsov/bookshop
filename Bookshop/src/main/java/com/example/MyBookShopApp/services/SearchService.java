@@ -9,13 +9,16 @@ import com.example.MyBookShopApp.repositories.AuthorRepository;
 import com.example.MyBookShopApp.repositories.Book2UserRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import com.example.MyBookShopApp.repositories.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchService {
@@ -24,14 +27,16 @@ public class SearchService {
     private final AuthorRepository authorRepository;
     private final UserRepository userRepository;
     private final Book2UserRepository book2UserRepository;
+    private final HttpServletRequest request;
 
     @Autowired
     public SearchService(BookRepository bookRepository, AuthorRepository authorRepository, UserRepository userRepository,
-                         Book2UserRepository book2UserRepository) {
+                         Book2UserRepository book2UserRepository, HttpServletRequest request) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.userRepository = userRepository;
         this.book2UserRepository = book2UserRepository;
+        this.request = request;
     }
 
     public Book createBook(BookEntity bookEntity) {
@@ -45,8 +50,16 @@ public class SearchService {
         book.setDiscount(bookEntity.getDiscount());
         int discountPrice = Math.round(bookEntity.getPrice() * (float) (100 - bookEntity.getDiscount()) / 100);
         book.setDiscountPrice(discountPrice);
-        book.setStatus("");
-        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+            Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
+            if (data.getOrDefault("CART", List.of()).stream().anyMatch(bookEntity.getSlug()::equals)) {
+                book.setStatus("CART");
+            } else if (data.getOrDefault("KEPT", List.of()).stream().anyMatch(bookEntity.getSlug()::equals)) {
+                book.setStatus("KEPT");
+            } else {
+                book.setStatus("");
+            }
+        } else {
             String userHash = SecurityContextHolder.getContext().getAuthentication().getName();
             UserEntity userEntity = userRepository.findUserEntityByHash(userHash);
             Book2UserEntity book2UserEntity = book2UserRepository.findBook2UserEntityByBookIdAndUserId(bookEntity.getId(), userEntity.getId());

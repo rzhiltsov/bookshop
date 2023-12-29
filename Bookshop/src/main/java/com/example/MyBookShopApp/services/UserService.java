@@ -52,6 +52,8 @@ public class UserService {
         if (userEntity == null) return null;
         User user = new User();
         user.setName(userEntity.getName());
+        user.setPhone("");
+        user.setMail("");
         userEntity.getContacts().forEach(userContactEntity -> {
             switch (userContactEntity.getType()) {
                 case PHONE -> user.setPhone(userContactEntity.getContact());
