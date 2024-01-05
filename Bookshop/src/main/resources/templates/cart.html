@@ -137,10 +137,12 @@ p.error-browser
                 <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">
                         <strong class="Cart-title">Итого:</strong>
-                        <span class="Cart-price" th:text="${totalPrice != totalDiscountPrice ? totalDiscountPrice : totalPrice} + ' р.'">534 р.</span>
+                        <span class="Cart-price" th:text="${totalDiscountPrice} + ' р.'">534 р.</span>
                         <span th:if="${totalPrice != totalDiscountPrice}" class="Cart-price_old" th:text="${totalPrice} + ' р.'">658 р.</span>
                     </div>
-                    <div class="Cart-block"><a class="btn btn_success btn_md" href="/order" th:disabled="${books.size() == 0}">Купить</a>
+                    <div class="Cart-block" style="text-align:right;">
+                        <button class="btn btn_success btn_md Cart-buyAll" data-bookid="[1111, 1122, 1133]" th:data-bookid="${slugs}"
+                                data-sendstatus="PAID" th:disabled="${books.size() == 0}">Купить</button>
                     </div>
                 </div>
             </form>

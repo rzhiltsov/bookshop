@@ -31,7 +31,7 @@ public class SearchPageController {
         model.addAttribute("query", query);
         List<Book> books = query == null ? List.of() : searchService.getFoundBooks(query, 0, 20);
         model.addAttribute("foundBooks", books);
-        model.addAttribute("resultLabel", searchService.getResultLabel(query == null ? -1 : books.size()));
+        model.addAttribute("resultLabel", searchService.getResultLabel(query == null ? -1 : searchService.getFoundBooksCount(query)));
         return "/search/index";
     }
 

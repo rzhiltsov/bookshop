@@ -4,6 +4,7 @@ import com.example.MyBookShopApp.entities.book.BookEntity;
 import com.example.MyBookShopApp.entities.book.rating.BookRatingEntity;
 import com.example.MyBookShopApp.entities.book.review.BookReviewEntity;
 import com.example.MyBookShopApp.entities.book.review.BookReviewLikeEntity;
+import com.example.MyBookShopApp.entities.payments.BalanceTransactionEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<BookReviewLikeEntity> reviewLikes;
+
+    @OneToMany(mappedBy = "user")
+    private List<BalanceTransactionEntity> transactions;
 
     @ManyToMany
     @JoinTable(name = "book2user",
@@ -128,6 +132,14 @@ public class UserEntity {
 
     public void setReviewLikes(List<BookReviewLikeEntity> reviewLikes) {
         this.reviewLikes = reviewLikes;
+    }
+
+    public List<BalanceTransactionEntity> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<BalanceTransactionEntity> transactions) {
+        this.transactions = transactions;
     }
 
     public List<BookEntity> getBooks() {

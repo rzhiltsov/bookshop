@@ -83,13 +83,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String[] securedPaths = {"/download/*", "/my*/**", "/profile", "/editProfile", "/buy", "/payment", "/successPayment",
+                "/failPayment", "/transactions"};
         return http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/download/*", "/my*/**", "/profile", "/editProfile").hasRole("USER")
+                .requestMatchers(securedPaths).hasRole("USER")
                 .requestMatchers("/**").permitAll()
                 .and()
                 .formLogin().loginPage("/signin")

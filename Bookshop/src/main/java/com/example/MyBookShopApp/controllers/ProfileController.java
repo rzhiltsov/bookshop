@@ -6,6 +6,7 @@ import com.example.MyBookShopApp.entities.enums.ContactType;
 import com.example.MyBookShopApp.entities.user.UserContactEntity;
 import com.example.MyBookShopApp.entities.user.UserEntity;
 import com.example.MyBookShopApp.services.BookService;
+import com.example.MyBookShopApp.services.TransactionService;
 import com.example.MyBookShopApp.services.UserContactService;
 import com.example.MyBookShopApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,15 @@ public class ProfileController {
     private final UserService userService;
     private final BookService bookService;
     private final UserContactService userContactService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public ProfileController(UserService userService, BookService bookService, UserContactService userContactService) {
+    public ProfileController(UserService userService, BookService bookService, UserContactService userContactService,
+                             TransactionService transactionService) {
         this.userService = userService;
         this.bookService = bookService;
         this.userContactService = userContactService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping("/my")
@@ -60,7 +64,8 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String profilePage() {
+    public String profilePage(Model model) {
+        model.addAttribute("transactions", transactionService.getTransactions(0, 5));
         return "profile";
     }
 

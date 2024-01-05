@@ -12,6 +12,7 @@ import com.example.MyBookShopApp.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,10 @@ public class SearchService {
     public List<Book> getFoundBooks(String query, int offset, int limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return bookRepository.findBookEntitiesByPattern(query, pageRequest).stream().map(this::createBook).toList();
+    }
+
+    public int getFoundBooksCount(String query) {
+        return (int) bookRepository.findBookEntitiesByPattern(query, Pageable.unpaged()).stream().map(this::createBook).count();
     }
 
     public String getResultLabel(int booksCount) {

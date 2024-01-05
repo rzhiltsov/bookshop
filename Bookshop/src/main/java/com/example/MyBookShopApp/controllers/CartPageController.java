@@ -57,6 +57,7 @@ public class CartPageController {
         model.addAttribute("books", bookMap);
         model.addAttribute("totalPrice", bookMap.keySet().stream().mapToInt(Book::getPrice).sum());
         model.addAttribute("totalDiscountPrice", bookMap.keySet().stream().mapToInt(Book::getDiscountPrice).sum());
+        model.addAttribute("slugs", bookMap.keySet().stream().map(Book::getSlug).collect(Collectors.joining(", ")));
         return "cart";
     }
 }

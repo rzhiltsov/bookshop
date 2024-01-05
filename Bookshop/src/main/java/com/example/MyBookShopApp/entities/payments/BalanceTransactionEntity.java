@@ -21,11 +21,11 @@ public class BalanceTransactionEntity {
     @Column(columnDefinition = "TIMESTAMP NOT NULL")
     private LocalDateTime time;
 
-    @Column(columnDefinition = "INT NOT NULL DEFAULT 0")
+    @Column(columnDefinition = "INT NOT NULL")
     private int value;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", columnDefinition = "INT NOT NULL")
+    @JoinColumn(name = "book_id", columnDefinition = "INT")
     private BookEntity book;
 
     @Column(columnDefinition = "TEXT NOT NULL")

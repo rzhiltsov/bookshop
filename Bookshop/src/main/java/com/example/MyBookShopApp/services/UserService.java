@@ -125,6 +125,10 @@ public class UserService {
         book2UserRepository.save(book2UserEntity);
     }
 
+    public void addBook2Users(List<Book2UserEntity> book2UserEntities) {
+        book2UserRepository.saveAll(book2UserEntities);
+    }
+
     public void deleteBook2User(Book2UserEntity book2UserEntity) {
         book2UserRepository.delete(book2UserEntity);
     }
