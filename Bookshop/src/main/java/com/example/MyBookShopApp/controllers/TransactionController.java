@@ -12,6 +12,7 @@ import com.example.MyBookShopApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -96,8 +97,8 @@ public class TransactionController {
 
     @GetMapping("/payment")
     @ResponseBody
-    public ObjectNode payment(@RequestParam Map<String, String> payment) throws NoSuchAlgorithmException {
-        if (payment.get("sum") == null || payment.get("ip") == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    public ObjectNode payment(@RequestParam Map<String, String> payment, HttpServletRequest request) throws NoSuchAlgorithmException {
+        if (payment.get("sum") == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         try {
             if (Integer.parseInt(payment.get("sum")) <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
@@ -106,7 +107,7 @@ public class TransactionController {
         String userHash = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.createUser(userService.getUserEntityByHash(userHash));
         ObjectNode result = objectMapper.createObjectNode();
-        String redirect = transactionService.buildTopUpUrl(payment.get("sum"), payment.get("ip"), userHash, user.getMail());
+        String redirect = transactionService.buildTopUpUrl(payment.get("sum"), request.getRemoteAddr(), userHash, user.getMail());
         result.put("result", true);
         result.put("redirect", redirect);
         return result;

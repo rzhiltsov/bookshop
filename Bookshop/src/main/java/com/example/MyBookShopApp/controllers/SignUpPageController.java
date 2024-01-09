@@ -32,7 +32,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,13 +185,11 @@ public class SignUpPageController {
         String userHash = Stream.of(user.get("phone"), user.get("mail"), user.get("name"), dateTime.toString())
                 .map(s -> Integer.toHexString(s.hashCode())).collect(Collectors.joining());
         userEntity.setHash(userHash);
-        List<UserContactEntity> userContactEntities = new ArrayList<>();
         phoneContact.setUser(userEntity);
-        userContactEntities.add(phoneContact);
         mailContact.setUser(userEntity);
-        userContactEntities.add(mailContact);
-        userEntity.setContacts(userContactEntities);
         userService.addUser(userEntity);
+        userContactService.addUserContactEntity(phoneContact);
+        userContactService.addUserContactEntity(mailContact);
         Map<String, List<String>> data = (LinkedHashMap) request.getAttribute("data");
         data.forEach((key, value) -> {
             Book2UserTypeEntity status;

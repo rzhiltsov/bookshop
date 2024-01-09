@@ -89,7 +89,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] securedPaths = {"/download/*", "/my*/**", "/profile", "/editProfile", "/buy", "/payment", "/successPayment",
+        String[] securedPaths = {"/download/*", "/my*/**", "/profile", "/editProfile", "/payment", "/successPayment",
                 "/failPayment", "/transactions"};
         return http
                 .requiresChannel().anyRequest().requiresSecure()
